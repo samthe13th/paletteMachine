@@ -1,0 +1,50 @@
+.custom-form {
+    position: relative;
+    margin-top: 8%;
+    border-style:solid;
+    border-color:white;
+    border-width: 1px;
+    background-color: rgba(255,255,255,1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 400px;
+}
+
+.custom-btn {
+    font-size: 20px;
+    border-style:solid;
+    border-color:black;
+    background-color: white;
+    border-width: 1px;
+    margin-top: 20px;
+    padding-right: 12px;
+    padding-left: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+body {
+    background-color: #171a2d;
+}
+.centered {
+    text-align: center;
+}
+
+.form-heading {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.spacer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.bg-image {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  /* Preserve aspet ratio */
+  width: 100%;
+  height: auto;
+}
