@@ -1,15 +1,19 @@
 'use strict'
 
 var preview, hexText, hueString, colorGrad, lumBar, hueBar, satColor, satGrad, satBar, blendL, blendR, blendM, mx, my, f, pwidth, pheight, lumSlider, hueSlider, satSlider;
-var r = 160;
-var r2 = 80;
+var params = {
+    r: 160,
+    r2: 80,
+    offx: 28,
+    offy: 57,
+    sliderLength: 180,
+    sliderX: 400
+}
 var padding = 0;
-var offx = 28;
-var offy = 57;
 var maxSegs = 12;
 var globalHsl = { h: 0, s: 0, l: 0 };
-var pcX = r + offx;
-var pcY = r + offy;
+var pcX = params.r + params.offx;
+var pcY = params.r + params.offy;
 var paper = Raphael("left", 600, 600);
 var segments = paper.set();
 var hoverSegs = paper.set();
@@ -17,8 +21,6 @@ var palette = paper.set();
 var moveColor = $("#move-color");
 var blank = "#e8eef7";
 var colors = [blank, blank, blank, blank, blank, blank];
-var sliderLength = 180;
-var sliderX = 400;
 var colorMode = "RGB";
 var mypic = new Image();
 var canvas = document.getElementById("myCanvas");
@@ -198,10 +200,10 @@ function deletePalette() {
 
 //Return a Raphael.js path to draw a palette segment
 function makeSeg(i, n) {
-    var path = "M" + (pcX + (r * Math.cos((i - 1) * 2 * Math.PI / n))) + " " + (pcY + (r * Math.sin((i - 1) * 2 * Math.PI / n))) + " "
-        + "A " + r + " " + r + ", 0, 0, 1," + " " + (pcX + (r * Math.cos(i * 2 * Math.PI / n))) + " " + (pcY + (r * Math.sin(i * 2 * Math.PI / n))) + " "
-        + "L " + (pcX + (r2 * Math.cos(i * 2 * Math.PI / n))) + " " + (pcY + (r2 * Math.sin(i * 2 * Math.PI / n))) + " "
-        + "A" + r2 + " " + r2 + ", 0, 0, 0, " + (pcX + (r2 * Math.cos((i - 1) * 2 * Math.PI / n))) + " " + (pcY + (r2 * Math.sin((i - 1) * 2 * Math.PI / n))) + " "
+    var path = "M" + (pcX + (params.r * Math.cos((i - 1) * 2 * Math.PI / n))) + " " + (pcY + (params.r * Math.sin((i - 1) * 2 * Math.PI / n))) + " "
+        + "A " + params.r + " " + params.r + ", 0, 0, 1," + " " + (pcX + (params.r * Math.cos(i * 2 * Math.PI / n))) + " " + (pcY + (params.r * Math.sin(i * 2 * Math.PI / n))) + " "
+        + "L " + (pcX + (params.r2 * Math.cos(i * 2 * Math.PI / n))) + " " + (pcY + (params.r2 * Math.sin(i * 2 * Math.PI / n))) + " "
+        + "A" + params.r2 + " " + params.r2 + ", 0, 0, 0, " + (pcX + (params.r2 * Math.cos((i - 1) * 2 * Math.PI / n))) + " " + (pcY + (params.r2 * Math.sin((i - 1) * 2 * Math.PI / n))) + " "
         + "Z' stroke='white'";
     return path;
 }
@@ -211,10 +213,10 @@ function makeHoverSeg(i, n) {
     var off = 5;
     var div = 3;
     var off2 = (Math.PI / 20);
-    var path = "M" + (pcX + ((r + off) * Math.cos((i * 2 * Math.PI / n) - off2))) + " " + (pcY + ((r + off) * Math.sin((i * 2 * Math.PI / n) - off2))) + " "
-        + "A " + (r + off) + " " + (r + off) + ", 0, 0, 1," + " " + (pcX + ((r + off) * Math.cos((i * 2 * Math.PI / n) + off2))) + " " + (pcY + ((r + off) * Math.sin((i * 2 * Math.PI / n) + off2))) + " "
-        + "L " + (pcX + ((r2 - off) * Math.cos((i * 2 * Math.PI / n) + off2))) + " " + (pcY + ((r2 - off) * Math.sin((i * 2 * Math.PI / n) + off2))) + " "
-        + "A" + (r2 - off) + " " + (r2 - off) + ", 0, 0, 0, " + (pcX + ((r2 - off) * Math.cos((i * 2 * Math.PI / n) - off2))) + " " + (pcY + ((r2 - off) * Math.sin((i * 2 * Math.PI / n) - off2))) + " "
+    var path = "M" + (pcX + ((params.r + off) * Math.cos((i * 2 * Math.PI / n) - off2))) + " " + (pcY + ((params.r + off) * Math.sin((i * 2 * Math.PI / n) - off2))) + " "
+        + "A " + (params.r + off) + " " + (params.r + off) + ", 0, 0, 1," + " " + (pcX + ((params.r + off) * Math.cos((i * 2 * Math.PI / n) + off2))) + " " + (pcY + ((params.r + off) * Math.sin((i * 2 * Math.PI / n) + off2))) + " "
+        + "L " + (pcX + ((params.r2 - off) * Math.cos((i * 2 * Math.PI / n) + off2))) + " " + (pcY + ((params.r2 - off) * Math.sin((i * 2 * Math.PI / n) + off2))) + " "
+        + "A" + (params.r2 - off) + " " + (params.r2 - off) + ", 0, 0, 0, " + (pcX + ((params.r2 - off) * Math.cos((i * 2 * Math.PI / n) - off2))) + " " + (pcY + ((params.r2 - off) * Math.sin((i * 2 * Math.PI / n) - off2))) + " "
         + "Z' stroke='white'";
     return path;
 }
@@ -584,14 +586,12 @@ onReady(function () {
 });
 
 function Tab(x, y, text, f) {
-    var d = "M " + x + " " + y + " l15 -30 l100 0 l15 35 Z";
+    var d = "M " + x + " " + y + " l15 -30 l100 0 l15 30 Z";
     var tab = paper.path(d);
     tab.attr({
         stroke: "white",
         "stroke-width": 2,
         fill: blank
-
-
     })
     return tab;
 }
@@ -653,11 +653,11 @@ $(function () {
     satColor = tinycolor("hsl " + tinycolor(preview.attrs.fill).toHsl().h + " 1.0 0.9").toHex();
     satGrad = "180-#" + satColor + "-grey"
     mixColors(tinycolor("blue").toRgb(), tinycolor("red").toRgb(), 0.5);
-    lumSlider = new Slider(paper, padding + sliderX, 120, sliderLength, 180, lumUpdate, sliderUp);
+    lumSlider = new Slider(paper, padding + params.sliderX, 120, params.sliderLength, 180, lumUpdate, sliderUp);
     lumSlider.setColor("180-#fff-#000");
-    hueSlider = new Slider(paper, padding + sliderX, 150, sliderLength, 180, hueUpdate, sliderUp);
+    hueSlider = new Slider(paper, padding + params.sliderX, 150, params.sliderLength, 180, hueUpdate, sliderUp);
     hueSlider.setColor(colorGrad.reverse());
-    satSlider = new Slider(paper, padding + sliderX, 180, sliderLength, 180, satUpdate, sliderUp)
+    satSlider = new Slider(paper, padding + params.sliderX, 180, params.sliderLength, 180, satUpdate, sliderUp)
     satSlider.setColor(satGrad);
     preview.attr("fill", "lightgreen");
     hexText.attr('text', "#" + tinycolor("#90ee90").toHex());
