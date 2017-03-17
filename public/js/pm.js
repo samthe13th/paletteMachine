@@ -26,6 +26,7 @@ var ctx = canvas.getContext("2d");
 var pickpxl = "";
 var eyedropper = false;
 var picoff = { x: 0, y: 0 };
+var user;
 
 //Read uploaded image file
 function readFile() {
@@ -663,6 +664,13 @@ $(function () {
     globalHsl = tinycolor("lightgreen").toHsl();
     updateSliders();
     makeColorCSS();
+    showPalette();
+    if (user){
+        console.log("sign in");
+        alert("You are signed in! ID: " + user.uid);
+    } else {
+        console.log("signed out mode");
+    }
 });
 
 function makeColorCSS() {

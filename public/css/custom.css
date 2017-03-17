@@ -24,7 +24,10 @@
 }
 
 body {
-    background-color: #171a2d;
+    background-image: url("http://slodive.com/wp-content/uploads/2011/05/polka-dot-backgrounds/black-polka.jpg");
+    background-repeat: repeat;
+    height: 650px;
+    border-width: 5px;
 }
 .centered {
     text-align: center;
@@ -32,7 +35,7 @@ body {
 
 .form-heading {
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .spacer {

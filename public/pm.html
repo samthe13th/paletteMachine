@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Palette Maker</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
@@ -14,69 +15,17 @@
     <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
-    <script type="text/javascript">
-        var config = {
-            apiKey: "AIzaSyA-0uhHYT0M3ahUFJtjvaNm21VgBqyqUxA",
-            authDomain: "palette-machine.firebaseapp.com",
-            databaseURL: "https://palette-machine.firebaseio.com",
-            storageBucket: "palette-machine.appspot.com",
-            messagingSenderId: "443340502886"
-        };
-        firebase.initializeApp(config);
-        console.log("initialize app")
-        // FirebaseUI config.
-        var uiConfig = {
-            callbacks: {
-                signInSuccess: function (currentUser, credential, redirectUrl) {
-                    alert("USER ID: " + firebase.auth().currentUser.uid)
-                    document.getElementById('loader').style.display = 'none';
-                    // Do something.
-                    // Return type determines whether we continue the redirect automatically
-                    // or whether we leave that to developer to handle.
-                    return true;
-                },
-                uiShown: function () {
-                    // The widget is rendered.
-                    // Hide the loader.
-                    document.getElementById('loader').style.display = 'none';
-                }
-            },
-            credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
-            // Query parameter name for mode.
-            queryParameterForWidgetMode: 'mode',
-            // Query parameter name for sign in success url.
-            queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
-            // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-            signInFlow: 'popup',
-            signInSuccessUrl: 'pm.html',
-            signInOptions: [
-                // Leave the lines as is for the providers you want to offer your users.
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-                firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-                {
-                    provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                    // Whether the display name should be displayed in the Sign Up page.
-                    requireDisplayName: true
-                }
-            ],
-            // Terms of service url.
-            tosUrl: '<your-tos-url>'
-        };
 
-        var ui = new firebaseui.auth.AuthUI(firebase.auth());
-        // The start method will wait until the DOM is loaded.
-        ui.start('#firebaseui-auth-container', uiConfig);
-
-        var pmDB = firebase.database();
-    </script>
 </head>
 
-<div id="header"><span id="sitetitle">Palette Machine</span> | by Sam MacKinnon <em>(demo)</em></div>
+<div id="header"><span id="sitetitle">Palette Machine<em>(demo)</em></span> User:<span id="useremail"></span></div>
 
 <body>
     <div id="fullpage">
-        <div class="container-center" id="firebaseui-auth-container"></div>
+        <div class="container-center" id="firebaseui-auth-container">
+            <button onclick="savePalette()">Save</button>
+            <h3 class="sidebar-text">My Palettes</h3>
+        </div>
         <div id="colormachine">
             <div id="left">
                 <div class="sub-window" id="table-window">
@@ -115,16 +64,66 @@
 </body>
 
 </html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="js/raphael.min.js"></script>
 <script src="js/tinycolor.js"></script>
 <script src="js/svgslider.js"></script>
 <script src="js/pm.js"></script>
+<script type="text/javascript">
+                                                                 var config = {
+                                                                     apiKey: "AIzaSyA-0uhHYT0M3ahUFJtjvaNm21VgBqyqUxA",
+                                                                     authDomain: "palette-machine.firebaseapp.com",
+                                                                     databaseURL: "https://palette-machine.firebaseio.com",
+                                                                     storageBucket: "palette-machine.appspot.com",
+                                                                     messagingSenderId: "443340502886"
+                                                                 };
+                                                                 firebase.initializeApp(config);
+                                                                 var pmDB = firebase.database();
+                                                                 var user = firebase.auth().currentUser;
+                                                                 var email, uid;
+                                                                 $(function () {
+                                                                     console.log("page loaded")
+                                                                     firebase.auth().onAuthStateChanged(function (user) {
+                                                                         if (user) {
+                                                                             // User is signed in.
+                                                                             var displayName = user.displayName;
+                                                                             email = user.email;
+                                                                             var emailVerified = user.emailVerified;
+                                                                             var photoURL = user.photoURL;
+                                                                             var isAnonymous = user.isAnonymous;
+                                                                             uid = user.uid;
+                                                                             var providerData = user.providerData;
+                                                                             console.log("user signed in callback: " + email);
+                                                                             $("#useremail").text(email);
+                                                                             pmDB.ref('users/' + uid).set({
+                                                                                 email: email,
+                                                                             });
+                                                                         } else {
+                                                                             // User is signed out.
+                                                                             // ...
+                                                                         }
+                                                                     });
+                                                                 })
 
+</script>
+<script>
+                                                                 function savePalette() {
+                                                                     var uid = firebase.auth().currentUser.uid;
+                                                                     console.log("SAVE ");
+                                                                     pmDB.ref('users/' + uid).child("palettes").push(colors);
+
+                                                                 }
+
+</script>
 
 <style>
     html {
         height: 650px;
+    }
+    
+    .sidebar-text {
+        color: white;
+        text-align: center;
+        padding: 10px;
     }
     
     #fullpage {
@@ -134,7 +133,6 @@
     }
     
     .container-center {
-        padding-top: 200px;
         position: fixed;
         top: 50px;
         height: 600px;
