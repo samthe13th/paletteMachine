@@ -278,7 +278,7 @@ function makeSwatches(c) {
             ystart = ypos2;
         }
         paper.path("M" + (xstart + xoff) + " " + (ystart - yoff - ytitle) + " l" + (cLength * 50) + " " + 0 + " l0 70 l" + (-(cLength * 50)) + " " + 0 + " Z")
-            .attr({ "stroke": "#e8eef7", "stroke-width": 2, "fill": "white" });
+            .attr({ "stroke": "#e8eef7", "stroke-width": 2, "fill": "black" });
         paper.text((xstart + 10), (ystart - 32), a).attr({ "font-size": 14, "fill": "#b6c3d6", "text-anchor": "start" })
         for (var i = 0; i < cLength; i++) {
             count++;
@@ -665,7 +665,7 @@ $(function () {
     updateSliders();
     makeColorCSS();
     showPalette();
-    if (user){
+    if (user) {
         console.log("sign in");
         alert("You are signed in! ID: " + user.uid);
     } else {
@@ -684,4 +684,10 @@ function makeColorCSS() {
             + "<br>"
     }
     $("#colors-CSS").html(csspage);
+}
+
+function savePalette() {
+    var uid = firebase.auth().currentUser.uid;
+    console.log("SAVE ");
+    pmDB.ref('users/' + uid).child("palettes").push(colors);
 }
