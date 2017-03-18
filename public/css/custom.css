@@ -170,6 +170,18 @@ input {
         padding: 30px;
         height: 365px;
     }
+
+    .delete-swatch {
+        border-style: solid;
+        border-color: lightgrey;
+        color: lightgrey;
+        background: none;
+    }
+
+    .delete-swatch:hover {
+        border-color: #ba5671;
+        color: #ba5671;
+    }
     
     #color-table {
         height: 360px;
@@ -190,19 +202,19 @@ input {
     
     #left {
         display: inline-block;
-        float: left;
         margin-right: 16px;
+        float: left;
     }
     
     #right {
         text-align: center;
         border-style: solid;
         border-color: #ba5671;
-       
         display: inline-block;
         width: 400px;
         height: 522px;
         margin-top: 34px;
+        float: left;
     }
     
     #image-form {

@@ -107,13 +107,29 @@ function updateTable() {
         } else {
             colorObj = rgb_obj;
         }
+        var xbtn_id = "xbtn" + i;
         mytable.append("<tr>"
-            + "<td><button class='delete-swatch' onclick='delete-swatch()'>X</button></td>"
+            + "<td><button class='delete-swatch' id='" + xbtn_id + "' onclick='deleteSwatch(" + i + ")'>X</button></td>"
             + "<td><div class='table-swatch' style='background-color: " + segments[i].attrs.fill + "'></div></td>"
             + "<td>" + "#" + tinycolor(segments[i].attrs.fill).toHex() + "</td>"
             + "<td>" + colorObj + "</td>"
             + "</tr>"
         )
+    }
+}
+
+function deleteSwatch(i) {
+    //console.log("delete: " + i);
+    if (segments.length > 2) {
+        segments[i].remove();
+        colors.splice(i, 1);
+        deletePalette();
+        makePalette();
+        makeHoverSegs();
+        updateTable();
+        toggleColorMode(colormode);
+    } else {
+        alert("There is a minimum of two swatches!")
     }
 }
 
@@ -644,7 +660,7 @@ function Tab(x, y, text, f, id) {
                 tabs[i][0].attr("fill", blank);
             }
         }
-        tabset[0].attr("fill","white");
+        tabset[0].attr("fill", "white");
     })
     tabset.id = id;
     return tabset;
@@ -652,9 +668,6 @@ function Tab(x, y, text, f, id) {
 
 //Initialize program
 $(function () {
-    var fn1 = function () {
-        console.log("fn1");
-    };
     var t3 = new Tab(220, 35, "CSS", function () {
         makeColorCSS();
     }, 2);
@@ -665,7 +678,7 @@ $(function () {
     var t1 = new Tab(0, 35, "Palette", function () {
         showPalette();
     }, 0);
-    t1[0].attr("fill","white");
+    t1[0].attr("fill", "white");
     tabs.push(t1).push(t2).push(t3);
     paper.rect(padding - 5, 35, 380, 365).attr({
         stroke: "#ebedf1",
