@@ -18,6 +18,7 @@ var paper = Raphael("left", 600, 600);
 var segments = paper.set();
 var hoverSegs = paper.set();
 var palette = paper.set();
+var tabs = paper.set();
 var moveColor = $("#move-color");
 var blank = "#e8eef7";
 var colors = [blank, blank, blank, blank, blank, blank];
@@ -29,6 +30,8 @@ var pickpxl = "";
 var eyedropper = false;
 var picoff = { x: 0, y: 0 };
 var user;
+var picker = $("#eyedropper");
+var colormode = "RGB";
 
 //Read uploaded image file
 function readFile() {
@@ -95,7 +98,7 @@ function showPalette() {
 function updateTable() {
     var mytable = $("#color-table");
     var colorObj;
-    mytable.html("<tr><th></th><th>Swatch</th><th>Hex</th><th><button id='RGBbtn' onclick='toggleColorMode(\"RGB\")'>RGB</button><button id='HSLbtn' onclick='toggleColorMode(\"HSL\")'>HSL</button></th></tr>");
+    mytable.html("<tr><th></th><th>Swatch</th><th>Hex</th><th><button class='smallbtn' id='RGBbtn' onclick='toggleColorMode(\"RGB\")'>RGB</button><button class='smallbtn' id='HSLbtn' onclick='toggleColorMode(\"HSL\")'>HSL</button></th></tr>");
     for (var i = 0; i < segments.length; i++) {
         var rgb_obj = "rgb(" + tinycolor(segments[i].attrs.fill).toRgb().r + ", " + tinycolor(segments[i].attrs.fill).toRgb().g + ", " + tinycolor(segments[i].attrs.fill).toRgb().b + ")";
         var hsl_obj = "hsl(" + Math.round(tinycolor(segments[i].attrs.fill).toHsl().h) + ", " + Math.round(100 * tinycolor(segments[i].attrs.fill).toHsl().s) + "%, " + Math.round(100 * tinycolor(segments[i].attrs.fill).toHsl().l) + "%)";
@@ -116,8 +119,14 @@ function updateTable() {
 
 //change color mode on color table to display HSL or RGB values
 function toggleColorMode(c) {
+    var elm = "#" + c + "btn";
+    console.log("get: " + elm);
+    //$(elm).css("background-color", "black");
     colorMode = c;
     updateTable();
+    $(elm).css({ "background-color": "#ba5671", "color": "white" })
+    colormode = c;
+    console.log("BG: " + $("#HSLbtn").css("background-color"));
 }
 
 //Update fill of palette segments
@@ -133,17 +142,22 @@ function makePalette() {
         var newP = paper.path(makeSeg(i, colors.length))
             .attr({ stroke: "#fff", "stroke-width": 3, fill: colors[i], id: i })
             .mouseover(function () {
+                var pickfill = $("#pick-fill").css("fill");
                 segments[this.id].attr({ "stroke-width": 7 });
                 window.dropOn = this;
                 if (moveColor.css("visibility") === "visible") {
                     $("body").css("cursor", "cell");
-                    this.attr({ "fill": moveColor.css("background-color") });
+                    this.attr({ "fill": pickfill });
                 } else {
                     $("body").css("cursor", "pointer");
                 }
             })
             .mouseout(function () {
-                $("body").css("cursor", "default");
+                if ($("#move-color").css("visibility") === "hidden") {
+                    $("body").css("cursor", "default");
+                } else if ($("body").css("cursor", "cell")) {
+                    $("body").css("cursor", "none");
+                }
                 this.attr({ "fill": this.paint });
                 window.dropOn = null;
                 if (segments[this.id].select !== true) {
@@ -152,10 +166,11 @@ function makePalette() {
             })
             .mouseup(function () {
                 if (moveColor.css("visibility") === "visible") {
-                    this.paint = moveColor.css("background-color");
+                    this.paint = $("#pick-fill").css("fill");
                     $("body").css("cursor", "pointer");
                     moveColor.css("visibility", "hidden");
-                    colors.splice(this.id, 1, tinycolor(this.paint).toHex());
+                    $("#eyedropper").css("visibility", "hidden");
+                    colors.splice(this.id, 1, "#" + tinycolor(this.paint).toHex());
                 } else {
                     var newColor = "#" + tinycolor(this.attrs.fill).toHex();
                     segments.forEach(function (s) {
@@ -229,7 +244,8 @@ function makeColorPreview() {
             pickColor(this.attrs.fill);
         })
         .mouseover(function () {
-            $("body").css("cursor", "pointer");
+            console.log("over preview");
+            CursorJS.display = true;
             this.attr({ "stroke": "white", "stroke-width": 2 });
             if (window.currentThing && window.currentThing.id === this.id) {
                 update();
@@ -237,7 +253,7 @@ function makeColorPreview() {
             }
         })
         .mouseout(function () {
-            $("body").css("cursor", "default");
+            CursorJS.display = false;
             this.attr({ "stroke": "none" });
         });
     preview.x = 385;
@@ -297,13 +313,21 @@ function makeSwatches(c) {
 
 //Return path to draw svg color swatch
 function makeSwatch(color, x, y) {
-    var swatch = paper.circle(x - 25, y, 20)
+    var swatch = paper.circle(x - 25, y, 18)
         .attr({ "fill": color, "stroke": "#e8eef7" })
         .mousedown(function () {
+            $("body").css("cursor", "default");
             pickColor(this.attrs.fill);
+            $("#eyedropper").css("visibility", "hidden");
+            console.log("this.attrs.fill: " + this.attrs.fill)
         })
         .mouseover(function () {
-            $("body").css("cursor", "pointer");
+            if (moveColor.css("visibility") === "hidden") {
+                $("#eyedropper").css("visibility", "visible");
+                $("body").css("cursor", "none");
+            } else {
+                $("body").css("cursor", "default");
+            }
             this.attr({ "stroke-width": 4 });
             if (window.currentThing && window.currentThing.id === this.id) {
                 update();
@@ -311,7 +335,10 @@ function makeSwatch(color, x, y) {
             }
         })
         .mouseout(function () {
-            $("body").css("cursor", "default");
+            if ($("#move-color").css("visibility") === "hidden") {
+                $("body").css("cursor", "default");
+            }
+            $("#eyedropper").css("visibility", "hidden");
             this.attr({ "stroke-width": 1 });
         });
     swatch.onDragOver(function (e) {
@@ -330,9 +357,11 @@ function makeSwatch(color, x, y) {
 //update fill color of eyedropper
 function pickColor(c) {
     moveColor.css({
-        "background-color": c,
-        "visibility": "visible"
-    })
+        "visibility": "visible",
+    });
+    $("#pick-fill").css("fill", c)
+    var pf = $("#pick-fill");
+    console.log("pickColor new: " + pf.css("fill"));
 }
 
 //update array of colors representing current circular palette
@@ -357,13 +386,15 @@ function makeHoverSegs() {
             .mouseover(function () {
                 var segL = segments[this.id];
                 var segR = segments[0];
-                if (this.id < segments.length - 1) {
-                    segR = segments[this.id + 1];
+                if (segments.length < maxSegs) {
+                    if (this.id < segments.length - 1) {
+                        segR = segments[this.id + 1];
+                    }
+                    var mix = mixColors(tinycolor(segL.attrs.fill).toRgb(), tinycolor(segR.attrs.fill).toRgb(), 0.5);
+                    $("body").css("cursor", "pointer");
+                    this.attr({ "opacity": 1, "fill": mix, "stroke-width": 8 });
+                    this.mix = mix;
                 }
-                var mix = mixColors(tinycolor(segL.attrs.fill).toRgb(), tinycolor(segR.attrs.fill).toRgb(), 0.5);
-                $("body").css("cursor", "pointer");
-                this.attr({ "opacity": 1, "fill": mix, "stroke-width": 8 });
-                this.mix = mix;
             })
             .mouseout(function () {
                 $("body").css("cursor", "default");
@@ -372,8 +403,6 @@ function makeHoverSegs() {
             .click(function () {
                 if (segments.length < maxSegs) {
                     updatePalette(this.id, this.mix);
-                } else {
-                    alert("Max 12 segments!")
                 }
             });
         testHover.id = i;
@@ -540,9 +569,13 @@ $("body").mouseup(function (e) {
             var mousePos = getMousePos(canvas, e);
             mx = mousePos.x;
             my = mousePos.y;
-            $("#move-color").css({
-                left: e.pageX + 15,
-                top: e.pageY + 15
+            moveColor.css({
+                left: e.pageX + 5,
+                top: (e.pageY - 25)
+            })
+            picker.css({
+                left: (e.pageX + 0),
+                top: (e.pageY - 30)
             })
             getPxlData(mx, my);
             if ((mx - picoff.x) < pwidth && (mx - picoff.x) > 0 && (my - picoff.y) > 0 && (my - picoff.y) < pheight) {
@@ -572,7 +605,9 @@ function show(id, value) {
 //Event listener for delete and backspace keys
 document.addEventListener('keydown', function (event) {
     if (event.keyCode === 8 || event.keyCode === 46) {
-        deleteSeg();
+        if (segments.length > 2) {
+            deleteSeg();
+        }
     }
 });
 
@@ -585,7 +620,8 @@ onReady(function () {
     show('loadOverlay', false);
 });
 
-function Tab(x, y, text, f) {
+function Tab(x, y, text, f, id) {
+    var tabset = paper.set();
     var d = "M " + x + " " + y + " l15 -30 l100 0 l15 30 Z";
     var tab = paper.path(d);
     tab.attr({
@@ -593,42 +629,44 @@ function Tab(x, y, text, f) {
         "stroke-width": 2,
         fill: blank
     })
-    return tab;
-}
-
-function doit(fn) {
-    fn();
+    var label = paper.text((x + 60), (y - 15), text).attr({ "font-size": 18, "fill": "grey" });
+    tabset.push(tab);
+    tabset.push(label);
+    tabset.mouseover(function () {
+        $("body").css("cursor", "pointer");
+    }).mouseout(function () {
+        $("body").css("cursor", "default");
+    }).mousedown(function () {
+        f();
+        for (var i = 0; i < tabs.length; i++) {
+            if (i !== tabset.id) {
+                tabs[i].insertBefore(tabs[tabset.id]);
+                tabs[i][0].attr("fill", blank);
+            }
+        }
+        tabset[0].attr("fill","white");
+    })
+    tabset.id = id;
+    return tabset;
 }
 
 //Initialize program
 $(function () {
-    // paper.rect(padding - 5, padding - 15, 380, 50).attr({
-    //     stroke: "#ebedf1",
-    //     "stroke-width": 2,
-    //     fill: "white"
-    // })
     var fn1 = function () {
         console.log("fn1");
     };
-    var t3 = new Tab(220, 35, "Palette", "#ebedf1");
-    t3.click(function () {
+    var t3 = new Tab(220, 35, "CSS", function () {
         makeColorCSS();
-    })
-    var t2 = new Tab(110, 35, "Palette", "#ebedf1");
-    t2.click(function () {
+    }, 2);
+    var t2 = new Tab(110, 35, "Table", function () {
         showTable();
-    })
-    var t1 = new Tab(0, 35, "Palette", "#ebedf1");
-    t1.click(function () {
+        toggleColorMode(colormode);
+    }, 1);
+    var t1 = new Tab(0, 35, "Palette", function () {
         showPalette();
-    })
-    // var d = "M 0 35 l15 -30 l100 0 l15 35 Z";
-    // var tab = paper.path(d);
-    // tab.attr({
-    //     stroke: "#ebedf1",
-    //     "stroke-width": 2,
-    //     fill: "#ebedf1"
-    // });
+    }, 0);
+    t1[0].attr("fill","white");
+    tabs.push(t1).push(t2).push(t3);
     paper.rect(padding - 5, 35, 380, 365).attr({
         stroke: "#ebedf1",
         "stroke-width": 2,
@@ -646,7 +684,7 @@ $(function () {
     })
     makeColorPreview();
     makePalette();
-    makeSwatches("#90ee90");
+    makeSwatches("#b0d2f3");
     makeHoverSegs();
     drawBlender();
     colorGrad = ["#f00", "#ff5600", "#ffab00", "#feff00", "#a9ff00", "#56ff00", "#0f0", "#00ff54", "#00ffa8", "#0ff", "#00abff", "#0056ff", "#00f", "#5400ff", "#fd00ff", "#ff00ac", "#ff0053", "#ff0001"];
@@ -659,9 +697,9 @@ $(function () {
     hueSlider.setColor(colorGrad.reverse());
     satSlider = new Slider(paper, padding + params.sliderX, 180, params.sliderLength, 180, satUpdate, sliderUp)
     satSlider.setColor(satGrad);
-    preview.attr("fill", "lightgreen");
+    preview.attr("fill", "#b0d2f3");
     hexText.attr('text', "#" + tinycolor("#90ee90").toHex());
-    globalHsl = tinycolor("lightgreen").toHsl();
+    globalHsl = tinycolor("#b0d2f3").toHsl();
     updateSliders();
     makeColorCSS();
     showPalette();
@@ -671,6 +709,7 @@ $(function () {
     } else {
         console.log("signed out mode");
     }
+    toggleColorMode(colormode);
 });
 
 function makeColorCSS() {

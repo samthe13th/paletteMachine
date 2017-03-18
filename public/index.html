@@ -15,7 +15,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
 </head>
 
-<div id="header"><span id="sitetitle">Palette Machine</span><em>(demo)</em></div>
+<div id="header"><span id="sitetitle">Palette Machine</span><em> (demo)</em></div>
 
 <body>
     <div id="fullpage">
@@ -44,13 +44,13 @@
                 <div id="addPicPanel1">
                     <div id="pickcolorpreview"></div>
                     <div id="idropdiv">
-                        <img id="idrop" src="img/icons/idropper.png" width: "30px" height: "30px"></img>
+                        <img id="idrop" src="graphics/idropper.png" width: "30px" height: "30px"></img>
                     </div>
                     <input id="inp" type='file'>
                 </div>
                 <p id="b64"></p>
                 <img id="myImage" />
-                <canvas id="myCanvas" width="300" height="300"></canvas>
+                <canvas class="colorpick" id="myCanvas" width="300" height="300"></canvas>
             </div>
             <div id="loader">Loading...</div>
             <svg id="move-color"></svg>
@@ -64,3 +64,4 @@
 <script src="js/svgslider.js"></script>
 <script src="js/pm.js"></script>
 <script type="text/javascript" src="js/firebase-init.js"></script>
+<script type="text/javascript" src="js/cursorJS.js"></script>

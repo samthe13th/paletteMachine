@@ -10,6 +10,15 @@
     width: 400px;
 }
 
+.smallbtn {
+    background-color: #f2f2f2;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    border-color: "white"; 
+    color: darkgrey;
+}
+
 .custom-btn {
     font-size: 20px;
     border-style:solid;
@@ -119,17 +128,22 @@ input {
         height: 30px;
         border-color: grey;
     }
+
+    #eyedropper {
+        visibility: hidden;
+        z-index: 9;
+         position: absolute;
+        left: 200px;
+        top: 100px;
+    }
     
     #move-color {
-        border-style: solid;
-        border-color: white;
-        background-color: white;
         width: 25px;
         height: 25px;
         position: absolute;
         left: 200px;
         top: 100px;
-        z-index: 100;
+        z-index: 9999;
         visibility: hidden;
     }
     
@@ -149,9 +163,11 @@ input {
     }
     
     #css-window {
+        font-size: 18px;
+        color: grey;
         visibility: hidden;
         top: -895px;
-        padding: 15px;
+        padding: 30px;
         height: 365px;
     }
     
@@ -182,9 +198,8 @@ input {
         text-align: center;
         border-style: solid;
         border-color: #ba5671;
-        border-radius: 15px;
+       
         display: inline-block;
-        color: red;
         width: 400px;
         height: 522px;
         margin-top: 34px;
@@ -224,10 +239,9 @@ input {
         background-color: #e8eef7;
         border-radius: 10px;
         margin: 10px;
-        cursor: crosshair;
     }
-    
-    #addPicPanel1 {
+
+     #addPicPanel1 {
        height: 50px;
         width: 300px;
         margin: 15px;
