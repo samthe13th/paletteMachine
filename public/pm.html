@@ -48,10 +48,8 @@
                 <h2 class='customTitle'>Upload Image</h2>
                 <div id="addPicPanel1">
                     <div id="pickcolorpreview"></div>
-                    <div id="idropdiv">
-                        <img id="idrop" src="graphics/idropper.png" width: "30px" height: "30px"></img>
-                    </div>
-                    <input id="inp" type='file'>
+                    <input id="inp" type='file' onchange="readURL(this)"/>
+                    <img id="img">
                 </div>
                 <p id="b64"></p>
                 <img id="myImage" />

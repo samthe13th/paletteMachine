@@ -31,25 +31,46 @@ var eyedropper = false;
 var picoff = { x: 0, y: 0 };
 var user;
 var picker = $("#eyedropper");
-var colormode = "RGB";
 
-//Read uploaded image file
-function readFile() {
-    if (this.files && this.files[0]) {
+// //Read uploaded image file
+// function readFile() {
+//     console.log("read")
+//     if (this.files && this.files[0]) {
+//         var FR = new FileReader();
+//         FR.addEventListener("load", function (e) {
+//             // document.getElementById("myImage").src = e.target.result;
+//             // document.getElementById("b64").innerHTML = e.target.result;
+//             mypic.src = e.target.result;
+//             setUpCanvas();
+//             getPxlData(50, 50);
+//         });
+//         console.log("FR.readAsDataURL: " + FR.readAsDataURL(this.files[0]));
+//         FR.readAsDataURL(this.files[0]);
+//     }
+// }
+
+function readURL(el) {
+    if (el.files && el.files[0]) {
         var FR = new FileReader();
-        FR.addEventListener("load", function (e) {
-            // document.getElementById("myImage").src = e.target.result;
-            // document.getElementById("b64").innerHTML = e.target.result;
+        FR.onload = function (e) {
             mypic.src = e.target.result;
-            setUpCanvas();
+            console.log(e.target.result);
             getPxlData(50, 50);
-        });
-        FR.readAsDataURL(this.files[0]);
+            mypic.onLoad = imageLoaded();
+        };
+        FR.readAsDataURL(el.files[0]);
     }
+};
+
+function imageLoaded() {
+    setTimeout(function () {
+        setUpCanvas();
+    }, 100)
 }
 
 //Resize and draw uploaded image onto canvas
 function setUpCanvas() {
+    console.log("set up canvas. Mypic: " + mypic.width);
     if (mypic.width > mypic.height) {
         f = 300 / mypic.width;
     } else {
@@ -60,6 +81,7 @@ function setUpCanvas() {
     picoff.x = (300 - pwidth) / 2;
     picoff.y = (300 - pheight) / 2;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log("mypic: " + mypic + "picoff.x: " + picoff.x, " pickoffy: " + picoff.y);
     ctx.drawImage(mypic, picoff.x, picoff.y, pwidth, pheight);
 }
 
@@ -98,7 +120,7 @@ function showPalette() {
 function updateTable() {
     var mytable = $("#color-table");
     var colorObj;
-    mytable.html("<tr><th></th><th>Swatch</th><th>Hex</th><th><button class='smallbtn' id='RGBbtn' onclick='toggleColorMode(\"RGB\")'>RGB</button><button class='smallbtn' id='HSLbtn' onclick='toggleColorMode(\"HSL\")'>HSL</button></th></tr>");
+    mytable.html("<tr><th></th><th>Swatch</th><th>Hex</th><th><button class='smallbtn' id='RGBbtn' onclick='togglecolorMode(\"RGB\")'>RGB</button><button class='smallbtn' id='HSLbtn' onclick='togglecolorMode(\"HSL\")'>HSL</button></th></tr>");
     for (var i = 0; i < segments.length; i++) {
         var rgb_obj = "rgb(" + tinycolor(segments[i].attrs.fill).toRgb().r + ", " + tinycolor(segments[i].attrs.fill).toRgb().g + ", " + tinycolor(segments[i].attrs.fill).toRgb().b + ")";
         var hsl_obj = "hsl(" + Math.round(tinycolor(segments[i].attrs.fill).toHsl().h) + ", " + Math.round(100 * tinycolor(segments[i].attrs.fill).toHsl().s) + "%, " + Math.round(100 * tinycolor(segments[i].attrs.fill).toHsl().l) + "%)";
@@ -127,22 +149,18 @@ function deleteSwatch(i) {
         makePalette();
         makeHoverSegs();
         updateTable();
-        toggleColorMode(colormode);
+        togglecolorMode(colorMode);
     } else {
         alert("There is a minimum of two swatches!")
     }
 }
 
 //change color mode on color table to display HSL or RGB values
-function toggleColorMode(c) {
+function togglecolorMode(c) {
     var elm = "#" + c + "btn";
-    console.log("get: " + elm);
-    //$(elm).css("background-color", "black");
     colorMode = c;
     updateTable();
     $(elm).css({ "background-color": "#ba5671", "color": "white" })
-    colormode = c;
-    console.log("BG: " + $("#HSLbtn").css("background-color"));
 }
 
 //Update fill of palette segments
@@ -313,7 +331,7 @@ function makeSwatches(c) {
         }
         paper.path("M" + (xstart + xoff) + " " + (ystart - yoff - ytitle) + " l" + (cLength * 50) + " " + 0 + " l0 70 l" + (-(cLength * 50)) + " " + 0 + " Z")
             .attr({ "stroke": "#e8eef7", "stroke-width": 2, "fill": "black" });
-        paper.text((xstart + 10), (ystart - 32), a).attr({ "font-size": 14, "fill": "#b6c3d6", "text-anchor": "start" })
+        paper.text((xstart + 10), (ystart - 32), a).attr({ "font-size": 14, "fill": "white", "text-anchor": "start" })
         for (var i = 0; i < cLength; i++) {
             count++;
             if (count === 13) {
@@ -330,7 +348,7 @@ function makeSwatches(c) {
 //Return path to draw svg color swatch
 function makeSwatch(color, x, y) {
     var swatch = paper.circle(x - 25, y, 18)
-        .attr({ "fill": color, "stroke": "#e8eef7" })
+        .attr({ "fill": color, "stroke": "white" })
         .mousedown(function () {
             $("body").css("cursor", "default");
             pickColor(this.attrs.fill);
@@ -377,7 +395,6 @@ function pickColor(c) {
     });
     $("#pick-fill").css("fill", c)
     var pf = $("#pick-fill");
-    console.log("pickColor new: " + pf.css("fill"));
 }
 
 //update array of colors representing current circular palette
@@ -628,7 +645,7 @@ document.addEventListener('keydown', function (event) {
 });
 
 //Event listener for image uploader
-document.getElementById("inp").addEventListener("change", readFile);
+//document.getElementById("inp").addEventListener("change", readFile);
 
 //Render loading page
 onReady(function () {
@@ -673,7 +690,7 @@ $(function () {
     }, 2);
     var t2 = new Tab(110, 35, "Table", function () {
         showTable();
-        toggleColorMode(colormode);
+        togglecolorMode(colorMode);
     }, 1);
     var t1 = new Tab(0, 35, "Palette", function () {
         showPalette();
@@ -681,7 +698,7 @@ $(function () {
     t1[0].attr("fill", "white");
     tabs.push(t1).push(t2).push(t3);
     paper.rect(padding - 5, 35, 380, 365).attr({
-        stroke: "#ebedf1",
+        stroke: "white",
         "stroke-width": 2,
         fill: "white"
     })
@@ -722,7 +739,7 @@ $(function () {
     } else {
         console.log("signed out mode");
     }
-    toggleColorMode(colormode);
+    togglecolorMode(colorMode);
 });
 
 function makeColorCSS() {
