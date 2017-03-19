@@ -31,6 +31,7 @@ var eyedropper = false;
 var picoff = { x: 0, y: 0 };
 var user;
 var picker = $("#eyedropper");
+var colorInput = $("#colorinput");
 
 // //Read uploaded image file
 // function readFile() {
@@ -214,7 +215,8 @@ function makePalette() {
                     segments[this.id].select = true;
                     segments[this.id].attr({ "stroke-width": 10 });
                     preview.attr("fill", newColor);
-                    hexText.attr('text', newColor);
+                    //hexText.attr('text', newColor);
+                    colorInput.val(newColor);
                     globalHsl = tinycolor(this.attrs.fill).toHsl();
                     updateSliders();
                     updateSwatches("#" + tinycolor(this.attrs.fill).toHex());
@@ -292,8 +294,8 @@ function makeColorPreview() {
         });
     preview.x = 385;
     preview.y = 75;
-    hexText = paper.text(padding + 470, padding + 75, preview.attrs.fill)
-        .attr({ "font-size": 26, "text-anchor": "start", "fill": "grey" })
+    //hexText = paper.text(padding + 470, padding + 75, preview.attrs.fill)
+    //  .attr({ "font-size": 26, "text-anchor": "start", "fill": "grey" })
 }
 
 //Return tinycolor.js-generated color combinations based on currently selected color
@@ -565,7 +567,8 @@ function lumUpdate() {
     globalHsl.l = this.sliderPoint / this.step;
     var newColor = "#" + tinycolor(globalHsl).toHex();
     preview.attr("fill", newColor);
-    hexText.attr('text', newColor);
+    //hexText.attr('text', newColor);
+    colorInput.val(newColor);
 }
 
 //Call this when dragging hue slider
@@ -574,7 +577,8 @@ function hueUpdate() {
     globalHsl.h = this.sliderPoint * 2;
     var newColor = "#" + tinycolor(globalHsl).toHex();
     preview.attr("fill", newColor);
-    hexText.attr('text', newColor);
+    //hexText.attr('text', newColor);
+    colorInput.val(newColor);
 }
 
 //Call this when dragging saturation slider
@@ -582,7 +586,8 @@ function satUpdate() {
     globalHsl.s = this.sliderPoint / this.step;
     var newColor = "#" + tinycolor(globalHsl).toHex();
     preview.attr("fill", newColor);
-    hexText.attr('text', newColor);
+    //hexText.attr('text', newColor);
+    colorInput.val(newColor);
 }
 
 //Event listeners for mouse up and mouse move
@@ -637,10 +642,17 @@ function show(id, value) {
 
 //Event listener for delete and backspace keys
 document.addEventListener('keydown', function (event) {
-    if (event.keyCode === 8 || event.keyCode === 46) {
+    if (event.keyCode == 8 || event.keyCode == 46) {
         if (segments.length > 2) {
             deleteSeg();
         }
+    }
+    if (event.keyCode == 13) {
+        var ci = "#" + tinycolor(colorInput.val()).toHex();
+        preview.attr("fill", ci);
+        globalHsl = tinycolor(colorInput.val()).toHsl();
+        updateSliders();
+        updateSwatches("#" + tinycolor(colorInput.val()).toHex());
     }
 });
 
@@ -728,7 +740,8 @@ $(function () {
     satSlider = new Slider(paper, padding + params.sliderX, 180, params.sliderLength, 180, satUpdate, sliderUp)
     satSlider.setColor(satGrad);
     preview.attr("fill", "#b0d2f3");
-    hexText.attr('text', "#" + tinycolor("#90ee90").toHex());
+    // hexText.attr('text', "#" + tinycolor("#90ee90").toHex());
+    colorInput.val("#" + tinycolor("#90ee90").toHex());
     globalHsl = tinycolor("#b0d2f3").toHsl();
     updateSliders();
     makeColorCSS();

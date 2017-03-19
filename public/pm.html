@@ -26,6 +26,7 @@
             <h3 class="sidebar-text">My Palettes</h3>
         </div>
         <div id="colormachine">
+            <input id="colorinput" type="text"></input>
             <div id="left">
                 <div class="sub-window" id="table-window">
                     <div class="table-div">
@@ -33,7 +34,8 @@
                             <tr>
                                 <th>Swatch</th>
                                 <th>Hex</th>
-                                <th><button id="RGBbtn" class="small-btn" onclick="changeToRgb()">RGB</button><button id="HSLbtn" class="small-btn" onclick="changeToHsl()">HSL</button></th>
+                                <th><button id="RGBbtn" class="small-btn" onclick="changeToRgb()">RGB</button><button id="HSLbtn"
+                                        class="small-btn" onclick="changeToHsl()">HSL</button></th>
                             </tr>
                         </table>
                     </div>
@@ -48,7 +50,7 @@
                 <h2 class='customTitle'>Upload Image</h2>
                 <div id="addPicPanel1">
                     <div id="pickcolorpreview"></div>
-                    <input id="inp" type='file' onchange="readURL(this)"/>
+                    <input id="inp" type='file' onchange="readURL(this)" />
                     <img id="img">
                 </div>
                 <p id="b64"></p>
