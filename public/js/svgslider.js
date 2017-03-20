@@ -4,8 +4,8 @@ var Slider = function (stage, x, y, l, m, drag, up) {
     var sliderWidth = 10
     var sliderRoundness = 8;
     var step = m;
-    bar = stage.rect(x, y, l, sliderWidth, sliderRoundness).attr({ fill: "white", opacity: 0.5, stroke: "none" });
-    rtnSlider = stage.rect(x, y - (sliderWidth / 2), 10, 20).attr({ fill: "white", stroke: "grey" })
+    bar = stage.rect(x, y, l, sliderWidth, sliderRoundness).attr({ fill: "#7fa0d2", stroke: "none" });
+    rtnSlider = stage.rect(x, y - (sliderWidth / 2), 10, 20).attr({ opacity: 0.7, fill: "white", stroke: "grey" })
         .drag(
         drag,
         function () {

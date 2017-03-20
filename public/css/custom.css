@@ -19,6 +19,17 @@
     color: darkgrey;
 }
 
+#refresh1 {
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 50px;
+    top: 140px;
+    left: 620px;
+    z-index: 100;
+    opacity: 0.2;
+}
+
 #colorinput {
     z-index: 1000;
     width: 110px;
@@ -29,6 +40,9 @@
     position: relative;
     display: block;
     top: 80px;
+    font-style: Arial, sans-serif;
+    font-size: 20px;
+    color: darkgrey;
     left: 470px;
 }
 
@@ -313,7 +327,7 @@ input {
     }
     
     tr:nth-child(even) {
-        background-color: #f2f2f2
+        background-color: #f2f2f2;
     }
     
     tr:nth-child(odd) {

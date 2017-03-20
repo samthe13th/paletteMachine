@@ -1,6 +1,6 @@
 'use strict'
 
-var preview, hexText, hueString, colorGrad, lumBar, hueBar, satColor, satGrad, satBar, blendL, blendR, blendM, mx, my, f, pwidth, pheight, lumSlider, hueSlider, satSlider;
+var preview, hexText, hueString, colorGrad, lumBar, hueBar, satColor, satGrad, satBar, blendL, blendR, blendM, mx, my, f, pwidth, pheight, lumSlider, hueSlider, satSlider, blendSlider;
 var params = {
     r: 160,
     r2: 80,
@@ -32,6 +32,22 @@ var picoff = { x: 0, y: 0 };
 var user;
 var picker = $("#eyedropper");
 var colorInput = $("#colorinput");
+var pickfill;
+var refreshbtn = $("#refresh1");
+
+function mouseOver() {
+    console.log("over");
+    $("body").css({
+        cursor: "pointer"
+    })
+}
+
+function mouseOut() {
+    console.log("out");
+    $("body").css({
+        cursor: "default"
+    })
+}
 
 // //Read uploaded image file
 // function readFile() {
@@ -49,6 +65,13 @@ var colorInput = $("#colorinput");
 //         FR.readAsDataURL(this.files[0]);
 //     }
 // }
+function refreshPalette() {
+    console.log("refresh palette");
+    colors = [blank, blank, blank, blank, blank, blank];
+    deletePalette();
+    makePalette();
+    makeHoverSegs();
+}
 
 function readURL(el) {
     if (el.files && el.files[0]) {
@@ -110,11 +133,13 @@ function showTable() {
     var mytable = $("#table-window");
     updateTable();
     mytable.css("visibility", "visible");
+    refreshbtn.css("visibility","hidden");
 }
 
 function showPalette() {
     $("#css-window").css("visibility", "hidden");
     $("#table-window").css("visibility", "hidden");
+    refreshbtn.css("visibility","visible");
 }
 
 //Update color table
@@ -177,7 +202,6 @@ function makePalette() {
         var newP = paper.path(makeSeg(i, colors.length))
             .attr({ stroke: "#fff", "stroke-width": 3, fill: colors[i], id: i })
             .mouseover(function () {
-                var pickfill = $("#pick-fill").css("fill");
                 segments[this.id].attr({ "stroke-width": 7 });
                 window.dropOn = this;
                 if (moveColor.css("visibility") === "visible") {
@@ -355,7 +379,7 @@ function makeSwatch(color, x, y) {
             $("body").css("cursor", "default");
             pickColor(this.attrs.fill);
             $("#eyedropper").css("visibility", "hidden");
-            console.log("this.attrs.fill: " + this.attrs.fill)
+            console.log("this.attrs.fill: " + this.attrs.fill);
         })
         .mouseover(function () {
             if (moveColor.css("visibility") === "hidden") {
@@ -397,6 +421,7 @@ function pickColor(c) {
     });
     $("#pick-fill").css("fill", c)
     var pf = $("#pick-fill");
+    pickfill = $("#pick-fill").css("fill");
 }
 
 //update array of colors representing current circular palette
@@ -499,6 +524,7 @@ function updateSwatches(c) {
 
 //Draw blending tool
 function drawBlender() {
+    var blenderTxt = paper.text(485, 250, "Blender").attr({ "font-size": 18, "fill": "#dbe2ed" });
     blendL = blendContainer(0, 1, 1, 0, true);
     blendR = blendContainer(1, 0, 0, 1, true);
     blendM = blendContainer(0, 1, 0, 1, false);
@@ -508,18 +534,20 @@ function drawBlender() {
 function blendContainer(a, b, c, d, fillable) {
     var r = 50;
     var x1 = padding + 485;
-    var y1 = padding + 340;
+    var y1 = padding + 360;
     var space = 80;
-    var bc = paper.path("M " + x1 + " " + y1 + " "
-        + "A " + r + " " + r + ", 0," + a + "," + b + ", " + x1 + " " + (y1 - space) + " "
-        + "A " + r + " " + r + ", 0," + c + "," + d + ", " + " " + x1 + " " + y1)
+    var bc = paper.path(
+        "M " + x1 + " " + y1 + " " +
+        "A " + r + " " + r + ", 0," + a + "," + b + ", " + x1 + " " + (y1 - space) + " " +
+        "A " + r + " " + r + ", 0," + c + "," + d + ", " + " " + x1 + " " + y1
+    )
         .attr({ "stroke": "#e8eef7", "stroke-width": 3, "fill": "white" })
     if (fillable) {
         bc.mouseover(function () {
             window.dropOn = this;
             if (moveColor.css("visibility") === "visible") {
                 $("body").css("cursor", "cell");
-                this.attr({ "fill": moveColor.css("background-color") });
+                this.attr({ "fill": pickfill });
             } else {
                 $("body").css("cursor", "pointer");
             }
@@ -534,7 +562,7 @@ function blendContainer(a, b, c, d, fillable) {
     })
         .click(function () {
             if (moveColor.css("visibility") === "visible") {
-                this.paint = moveColor.css("background-color");
+                this.paint = pickfill;
                 $("body").css("cursor", "pointer");
                 var mix = mixColors(tinycolor(blendL.attrs.fill).toRgb(), tinycolor(blendR.attrs.fill).toRgb(), 0.5);
                 blendM.attr({ "fill": mix });
@@ -729,6 +757,9 @@ $(function () {
     makeSwatches("#b0d2f3");
     makeHoverSegs();
     drawBlender();
+    // blendSlider = new Slider(paper, padding + params.sliderX, 360, params.sliderLength, 10, blendColors, function () { console.log("up") })
+    // blendSlider.setColor("#c5d4e9");
+    // blendSlider.setSlider(5);
     colorGrad = ["#f00", "#ff5600", "#ffab00", "#feff00", "#a9ff00", "#56ff00", "#0f0", "#00ff54", "#00ffa8", "#0ff", "#00abff", "#0056ff", "#00f", "#5400ff", "#fd00ff", "#ff00ac", "#ff0053", "#ff0001"];
     satColor = tinycolor("hsl " + tinycolor(preview.attrs.fill).toHsl().h + " 1.0 0.9").toHex();
     satGrad = "180-#" + satColor + "-grey"
@@ -766,6 +797,13 @@ function makeColorCSS() {
             + "<br>"
     }
     $("#colors-CSS").html(csspage);
+        refreshbtn.css("visibility","hidden");
+}
+
+function blendColors() {
+    var mix = mixColors(tinycolor(blendL.attrs.fill).toRgb(), tinycolor(blendR.attrs.fill).toRgb(), (Math.round(10 * (blendSlider.sliderPoint / 10))) / 10);
+    blendM.attr({ "fill": mix });
+    blendM.paint = mix;
 }
 
 function savePalette() {
