@@ -105,7 +105,6 @@ input {
     }
     
     .container-center {
-        padding-top: 200px;
         position: fixed;
         top: 50px;
         height: 100%;
@@ -113,6 +112,20 @@ input {
         border-width: 1px;
         margin: auto;
         width: 280px;
+        display: inline-block;
+    }
+
+    .miniPalette {
+        padding: 15px;
+        border-style: solid;
+        border-color: darkgrey;
+        margin: 5px;
+    }
+
+    .miniSwatch {
+        width: 30px;
+        height: 30px;
+        border-style: solid;
         display: inline-block;
     }
     

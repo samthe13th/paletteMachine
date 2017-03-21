@@ -20,9 +20,17 @@ $(function () {
             uid = user.uid;
             var providerData = user.providerData;
             $("#useremail").text(email);
-            pmDB.ref('users/' + uid).set({
-                email: email,
-            });
+            pmDB.ref('users/' + uid).once('value', function (snapshot) {
+                console.log("get sshot")
+                if (snapshot.val !== null) {
+                    console.log("user " + snapshot.val() + "exists")
+                } else {
+                    console.log("user d/n exist")
+                    pmDB.ref('users/' + uid).set({
+                        email: email,
+                    });
+                }
+            })
         } else {
             console.log("user signed out");
         }
