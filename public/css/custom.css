@@ -118,9 +118,8 @@ input {
 
     .miniPalette {
         padding: 15px;
-        background-color: white;
+        background-color: black;
         border-style: solid;
-        border-color: white;
         height: 100px;
         margin: 5px;
     }
@@ -275,7 +274,7 @@ input {
         display: block;
         margin-left: 300px;
         margin-right: auto;
-        margin-top: 65px;
+        margin-top: 40px;
     }
     
     #pickcolorpreview {

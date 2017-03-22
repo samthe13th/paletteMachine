@@ -12,6 +12,7 @@ var email, uid;
 $(function () {
     console.log("page loaded")
     firebase.auth().onAuthStateChanged(function (user) {
+        console.log("auth change");
         if (user) {
             // User is signed in.
             var displayName = user.displayName;
@@ -22,6 +23,7 @@ $(function () {
             $("#useremail").text(email);
             pmDB.ref('users/' + uid).once('value', function (snapshot) {
                 console.log("get sshot")
+                load();
                 if (snapshot.val !== null) {
                     console.log("user " + snapshot.val() + "exists")
                 } else {
@@ -30,7 +32,7 @@ $(function () {
                         email: email,
                     });
                 }
-            })
+            });
         } else {
             console.log("user signed out");
         }

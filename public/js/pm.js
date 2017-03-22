@@ -1,5 +1,7 @@
 'use strict'
 
+var pname = null;
+var unsaved_changes = true;
 var preview, hexText, hueString, colorGrad, lumBar, hueBar, satColor, satGrad, satBar, blendL, blendR, blendM, mx, my, f, pwidth, pheight, lumSlider, hueSlider, satSlider, blendSlider;
 var params = {
     r: 160,
@@ -198,6 +200,8 @@ function update() {
 
 //Make a new circular palette with svg segments
 function makePalette() {
+    unsaved_changes = true;
+    $("#unsaved").text("*");
     for (var i = 0; i < colors.length; i++) {
         var newP = paper.path(makeSeg(i, colors.length))
             .attr({ stroke: "#fff", "stroke-width": 3, fill: colors[i], id: i })
@@ -225,6 +229,8 @@ function makePalette() {
             })
             .mouseup(function () {
                 if (moveColor.css("visibility") === "visible") {
+                    unsaved_changes = true;
+                    $("#unsaved").text("*");
                     this.paint = $("#pick-fill").css("fill");
                     $("body").css("cursor", "pointer");
                     moveColor.css("visibility", "hidden");
@@ -784,6 +790,7 @@ $(function () {
         console.log("signed out mode");
     }
     togglecolorMode(colorMode);
+    // load();
 });
 
 function makeColorCSS() {
@@ -806,21 +813,32 @@ function blendColors() {
     blendM.paint = mix;
 }
 
-function savePalette() {
+function savePalette(name) {
     var loadpalettes = "";
     var uid = firebase.auth().currentUser.uid;
     console.log("SAVE ");
-    pmDB.ref('users/' + uid).child("palettes").push(colors);
+    pmDB.ref('users/' + uid).child('palettes/' + name).set({
+        swatches: colors
+    });
+    load();
+    unsaved_changes = false;
+    $("#unsaved").text("");
+    $("#pname").text(pname);
+}
+
+function load() {
+    var loadpalettes = "";
+    var uid = firebase.auth().currentUser.uid;
     pmDB.ref('users/' + uid).child("palettes")
         .once('value', function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
                 var childKey = childSnapshot.key;
                 var childData = childSnapshot.val();
-                console.log(childKey + ": " + childData);
-                loadpalettes += "<div class='miniPalette'>"
-                for (var i = 0; i < childData.length; i++){
-                    loadpalettes += "<div class='miniSwatch' style='background-color: " + childData[i] + "'></div>"
-                    if (i === 5){
+                console.log(childKey + ": " + JSON.stringify(childData));
+                loadpalettes += "<div onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "') class='miniPalette'><div style='color: white'>" + childKey + "</div>"
+                for (var i = 0; i < childData.swatches.length; i++) {
+                    loadpalettes += "<div class='miniSwatch' style='background-color: " + childData.swatches[i] + "'></div>"
+                    if (i === 5) {
                         loadpalettes += "<br><br>";
                     }
                 }
@@ -829,4 +847,37 @@ function savePalette() {
             console.log("LOAD PALETTES: " + loadpalettes);
             $("#loadcontainer").html(loadpalettes);
         });
+
+}
+
+
+function loadPalette(key, data) {
+    vex.dialog.confirm({
+        message: 'Are you sure you want to load a new Palette? You will lose current unsaved changes.',
+        callback: function (value) {
+            colors = JSON.parse(data);
+            deletePalette();
+            makePalette();
+            makeHoverSegs();
+            pname = key;
+            unsaved_changes = false;
+            $("#unsaved").text("");
+            $("#pname").text(pname);
+        }
+    })
+}
+
+function savePrompt() {
+    if (pname) {
+        savePalette(pname);
+    } else {
+        vex.dialog.prompt({
+            message: 'Save Palette',
+            placeholder: 'name',
+            callback: function (value) {
+                pname = value;
+                savePalette(value);
+            }
+        });
+    }
 }
