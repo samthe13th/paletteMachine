@@ -5,26 +5,24 @@
     <meta charset="UTF-8">
     <title>Palette Machine</title>
     <div id="loadOverlay" style="background-color:#ffffff ;background-image: url('http://phylo.cs.mcgill.ca/assets/img/loading.gif'); background-repeat: no-repeat; background-position: center; position:absolute; top:0px; left:0px; width:100%; height:100%; z-index:2000;"></div>
+
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
     <link href="vendor/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <link href="css/custom.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="css/vex.css" />
     <link rel="stylesheet" href="css/vex-theme-wireframe.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
-    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
-    <script src="js/vex.combined.min.js"></script>
-    <script>
-        vex.defaultOptions.className = 'vex-theme-wireframe'
-    </script>
 </head>
 
-<div id="header"><span id="sitetitle">Palette Machine<em style="font-size: 10px"> (demo) </em></span> | <span id="useremail"></span> -- <span id="pname"><em>untitled</em></span><span id="unsaved"></span></div>
+<div id="header"><span id="sitetitle">Palette Machine<em style="font-size: 10px"> (demo) </em></span> | <span id="useremail"></span> --
+    <span
+        id="pname"><em>untitled</em></span><span id="unsaved"></span></div>
 
 <body class="colorpick">
     <div id="fullpage">
         <div class="container-center">
-            <button onclick="savePrompt()">Save</button>
+            <button onclick="savePrompt(false)">Save</button>
+            <button onclick="savePrompt(true)">Save As</button>
+            <button onclick="newPalette()">New</button>
             <h3 class="sidebar-text">My Palettes</h3>
             <hr>
             <div id="loadcontainer"></div>
@@ -71,6 +69,13 @@
 </body>
 
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+<script src="js/vex.combined.min.js"></script>
+<script>
+    vex.defaultOptions.className = 'vex-theme-wireframe'
+</script>
 <script src="js/raphael.min.js"></script>
 <script src="js/tinycolor.js"></script>
 <script src="js/svgslider.js"></script>

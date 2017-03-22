@@ -179,7 +179,7 @@ function deleteSwatch(i) {
         updateTable();
         togglecolorMode(colorMode);
     } else {
-        alert("There is a minimum of two swatches!")
+        vex.dialog.alert("There is a minimum of two swatches!")
     }
 }
 
@@ -679,6 +679,8 @@ document.addEventListener('keydown', function (event) {
     if (event.keyCode == 8 || event.keyCode == 46) {
         if (segments.length > 2) {
             deleteSeg();
+        } else {
+            vex.dialog.alert("There is a minimum of two swatches!")
         }
     }
     if (event.keyCode == 13) {
@@ -852,23 +854,33 @@ function load() {
 
 
 function loadPalette(key, data) {
-    vex.dialog.confirm({
-        message: 'Are you sure you want to load a new Palette? You will lose current unsaved changes.',
-        callback: function (value) {
-            colors = JSON.parse(data);
-            deletePalette();
-            makePalette();
-            makeHoverSegs();
-            pname = key;
-            unsaved_changes = false;
-            $("#unsaved").text("");
-            $("#pname").text(pname);
-        }
-    })
+    if (unsaved_changes) {
+        vex.dialog.confirm({
+            message: 'Are you sure you want to load \"' + key + '\"? You will lose current unsaved changes on \"' + $("#pname").text() + '\".',
+            callback: function (value) {
+                if (value) {
+                    loadPaletteCallback(key, data);
+                }
+            }
+        })
+    } else {
+        loadPaletteCallback(key, data);
+    }
 }
 
-function savePrompt() {
-    if (pname) {
+function loadPaletteCallback(key, data) {
+    colors = JSON.parse(data);
+    deletePalette();
+    makePalette();
+    makeHoverSegs();
+    pname = key;
+    unsaved_changes = false;
+    $("#unsaved").text("");
+    $("#pname").text(pname);
+}
+
+function savePrompt(saveas) {
+    if (!saveas && pname) {
         savePalette(pname);
     } else {
         vex.dialog.prompt({
