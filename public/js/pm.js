@@ -80,7 +80,7 @@ function readURL(el) {
         var FR = new FileReader();
         FR.onload = function (e) {
             mypic.src = e.target.result;
-            console.log(e.target.result);
+            //console.log(e.target.result);
             getPxlData(50, 50);
             mypic.onLoad = imageLoaded();
         };
@@ -199,14 +199,16 @@ function update() {
 }
 
 function newPalette() {
-    vex.dialog.prompt({
-        message: 'New Palette',
-        placeholder: 'name',
-        callback: function (value) {
-            pname = value;
-            savePalette(value);
+    vex.dialog.confirm({
+        message: "This will make a new blank palette. Are you sure?",
+        callback: function (confirm) {
+            if (confirm) {
+                refreshPalette();
+                pname = null;
+                $("#pname").html("<em>untitled</em>");
+             }
         }
-    });
+    })
 }
 
 //Make a new circular palette with svg segments
@@ -849,7 +851,7 @@ function load() {
             snapshot.forEach(function (childSnapshot) {
                 childKey = childSnapshot.key;
                 childData = childSnapshot.val();
-                console.log(childKey + ": " + JSON.stringify(childData));
+                // console.log(childKey + ": " + JSON.stringify(childData));
                 var h = 80;
                 if (childData.swatches.length > 6) {
                     h = 120;
@@ -863,7 +865,7 @@ function load() {
                 }
                 loadpalettes += "</div>";
             });
-            console.log("LOAD PALETTES: " + loadpalettes);
+            // console.log("LOAD PALETTES: " + loadpalettes);
             $("#loadcontainer").html(loadpalettes);
         });
 }
@@ -902,9 +904,42 @@ function savePrompt(saveas) {
             message: 'Save Palette',
             placeholder: 'name',
             callback: function (value) {
-                pname = value;
-                savePalette(value);
+                lookForSameName(value).then(function (v) {
+                    if (v !== null) {
+                        vex.dialog.confirm({
+                            message: "There is already a palette with this name in your collection. Do you want to overwrite it?",
+                            callback: function (confirm) {
+                                if (confirm) {
+                                    pname = value;
+                                    savePalette(value);
+                                }
+                            }
+                        })
+                    } else {
+                        pname = value;
+                        savePalette(value);
+                    }
+                });
             }
         });
     }
+}
+
+//TODO: fix callback on promise
+
+function lookForSameName(name) {
+    var pmDB = firebase.database();
+    var user = firebase.auth().currentUser;
+    return new Promise(function (resolve, reject) {
+        pmDB.ref('users/' + user.uid).child('palettes/' + name).once('value', function (snapshot) {
+            console.log("snapshot: " + snapshot.val())
+            if (snapshot.val() !== null) {
+                console.log("palette " + snapshot.val() + " exists")
+                resolve(snapshot.val());
+            } else {
+                console.log("No match found");
+                resolve(null);
+            }
+        })
+    });
 }

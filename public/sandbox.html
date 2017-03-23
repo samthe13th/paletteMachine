@@ -1,7 +1,9 @@
 <html>
 
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="js/undo.js"></script>
+    <script type="text/javascript" src="js/promises.js"></script>
 </head>
 
 <body>
@@ -11,10 +13,5 @@
 <html>
 
 <script>
-UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 1")});
-UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 2")});
-UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 3")});
-UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 4")});
-UM.undo();
-UM.undo();
+
 </script>
