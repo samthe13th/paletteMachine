@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="js/undo.js"></script>
+</head>
+
+<body>
+    <h1>Testing Sandbox</h1>
+</body>
+
+<html>
+
+<script>
+UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 1")});
+UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 2")});
+UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 3")});
+UM.pushToStack(function(){ console.log("do it")}, function(){ console.log("undo it 4")});
+UM.undo();
+UM.undo();
+</script>

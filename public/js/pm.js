@@ -198,6 +198,17 @@ function update() {
     })
 }
 
+function newPalette() {
+    vex.dialog.prompt({
+        message: 'New Palette',
+        placeholder: 'name',
+        callback: function (value) {
+            pname = value;
+            savePalette(value);
+        }
+    });
+}
+
 //Make a new circular palette with svg segments
 function makePalette() {
     unsaved_changes = true;
@@ -833,11 +844,17 @@ function load() {
     var uid = firebase.auth().currentUser.uid;
     pmDB.ref('users/' + uid).child("palettes")
         .once('value', function (snapshot) {
+            var childKey;
+            var childData;
             snapshot.forEach(function (childSnapshot) {
-                var childKey = childSnapshot.key;
-                var childData = childSnapshot.val();
+                childKey = childSnapshot.key;
+                childData = childSnapshot.val();
                 console.log(childKey + ": " + JSON.stringify(childData));
-                loadpalettes += "<div onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "') class='miniPalette'><div style='color: white'>" + childKey + "</div>"
+                var h = 80;
+                if (childData.swatches.length > 6) {
+                    h = 120;
+                }
+                loadpalettes += "<div onmouseover='mouseOver()' onmouseout='mouseOut()' class='miniPalette' id='" + childKey + "' style='height: " + h + "px' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')><div style='color: white'>" + childKey + "</div>"
                 for (var i = 0; i < childData.swatches.length; i++) {
                     loadpalettes += "<div class='miniSwatch' style='background-color: " + childData.swatches[i] + "'></div>"
                     if (i === 5) {
@@ -849,9 +866,7 @@ function load() {
             console.log("LOAD PALETTES: " + loadpalettes);
             $("#loadcontainer").html(loadpalettes);
         });
-
 }
-
 
 function loadPalette(key, data) {
     if (unsaved_changes) {

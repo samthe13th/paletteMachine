@@ -14,15 +14,14 @@
 </head>
 
 <div id="header"><span id="sitetitle">Palette Machine<em style="font-size: 10px"> (demo) </em></span> | <span id="useremail"></span> --
-    <span
-        id="pname"><em>untitled</em></span><span id="unsaved"></span></div>
+    <span id="pname"><em>untitled</em></span><span id="unsaved"></span></div>
 
 <body class="colorpick">
     <div id="fullpage">
         <div class="container-center">
-            <button onclick="savePrompt(false)">Save</button>
-            <button onclick="savePrompt(true)">Save As</button>
-            <button onclick="newPalette()">New</button>
+            <button class="custom-btn" onclick="savePrompt(false)">Save</button>
+            <button class="custom-btn" onclick="savePrompt(true)">Save As</button>
+            <button class="custom-btn" onclick="newPalette()">New</button>
             <h3 class="sidebar-text">My Palettes</h3>
             <hr>
             <div id="loadcontainer"></div>
@@ -74,7 +73,8 @@
 <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
 <script src="js/vex.combined.min.js"></script>
 <script>
-    vex.defaultOptions.className = 'vex-theme-wireframe'
+                                                          vex.defaultOptions.className = 'vex-theme-wireframe'
+
 </script>
 <script src="js/raphael.min.js"></script>
 <script src="js/tinycolor.js"></script>
