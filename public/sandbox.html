@@ -1,17 +1,66 @@
 <html>
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type="text/javascript" src="js/undo.js"></script>
-    <script type="text/javascript" src="js/promises.js"></script>
+    <script src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/undomanager.js"></script>
 </head>
 
 <body>
     <h1>Testing Sandbox</h1>
+    <button id="add" onclick="addbtn()">Add</button>
+    <button id="remove" onclick="rmvbtn()">Remove</button>
+    <button id="undobtn" onclick="undo()">Undo</button>
+    <button id="redobtn" onclick="redo()">Redo</button>
+    <div id="sandbox"></div>
+    <div id="log"></div>
 </body>
 
-<html>
-
+</html>
 <script>
+    var UM = new UndoManager();
+
+                                  var blocks = [];
+                                  function render() {
+                                      var blockstr = "";
+                                      for (var i = 0; i < blocks.length; i++) {
+                                          blockstr += "<div class='test-block'></div>"
+                                      }
+                                      $("#sandbox").html(blockstr);
+                                  }
+                                  function addbtn() {
+                                      UM.add({ undo: rmv, redo: add });
+                                      add();
+                                  }
+                                  var add = function () {
+                                      console.log("calling add")
+                                      blocks.push(blocks.length);
+                                      render();
+                                  }
+                                  function rmvbtn() {
+                                      UM.add({ undo: add, redo: rmv });
+                                      rmv();
+                                  }
+                                  var rmv = function () {
+                                      console.log("calling remove")
+                                      blocks.pop();
+                                      render();
+                                  }
+                                  function undo() {
+                                      UM.undo();
+                                  }
+                                  function redo() {
+                                      UM.redo();
+                                  }
 
 </script>
+
+<style>
+    .test-block {
+        width: 50px;
+        height: 50px;
+        background-color: orange;
+        border-radius: 10px;
+        display: inline-block;
+        margin: 5px;
+    }
+</style>

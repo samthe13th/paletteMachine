@@ -25,7 +25,7 @@ $(function () {
                 console.log("get sshot")
                 load();
                 if (snapshot.val() !== null) {
-                    console.log("user " + snapshot.val() + "exists")
+               //     console.log("user " + snapshot.val() + " exists")
                 } else {
                     console.log("user d/n exist")
                     pmDB.ref('users/' + uid).set({

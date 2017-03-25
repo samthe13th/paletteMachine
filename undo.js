@@ -4,26 +4,34 @@
             stack: [],
             depth: 10,
             pos: 0,
-            pushToStack: function (redofn, undofn) {
+            test: function(){
+                console.log("test undo");
+            },
+            pushToStack: function (action, reverse) {
                 if (this.stack.length <= this.depth) {
                     this.stack.push({
-                        redofn: redofn,
-                        undofn: undofn
+                        redofn: action,
+                        undofn: reverse
                     })
                 } else {
                     console.log("stack full");
                 }
+                this.pos++;
+                console.log("stack: " + JSON.stringify(this.stack));
             },
             undo: function () {
-                if (this.pos < this.stack.length) {
+                console.log("undo from pos " + this.pos);
+                console.log(this.stack[this.pos].undofn);
+                if (this.pos > 0) {
                     this.stack[this.pos].undofn();
-                    this.pos++;
+                    this.pos--;
                 }
             },
             redo: function () {
-                if (this.pos > 0) {
+                console.log("redo");
+                if (this.pos < this.stack.length) {
                     this.stack[this.pos].redofn();
-                    this.pos--;
+                    this.pos++;
                 }
             }
         };

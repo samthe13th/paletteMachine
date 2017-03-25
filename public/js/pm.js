@@ -36,6 +36,7 @@ var picker = $("#eyedropper");
 var colorInput = $("#colorinput");
 var pickfill;
 var refreshbtn = $("#refresh1");
+var UM;
 
 function mouseOver() {
     console.log("over");
@@ -68,11 +69,17 @@ function mouseOut() {
 //     }
 // }
 function refreshPalette() {
-    console.log("refresh palette");
-    colors = [blank, blank, blank, blank, blank, blank];
-    deletePalette();
-    makePalette();
-    makeHoverSegs();
+    vex.dialog.confirm({
+        message: "Are you sure you want to clear the palette?",
+        callback: function (v) {
+            if (v) {
+                colors = [blank, blank, blank, blank, blank, blank];
+                deletePalette();
+                makePalette();
+                makeHoverSegs();
+            }
+        }
+    })
 }
 
 function readURL(el) {
@@ -206,7 +213,7 @@ function newPalette() {
                 refreshPalette();
                 pname = null;
                 $("#pname").html("<em>untitled</em>");
-             }
+            }
         }
     })
 }
@@ -244,11 +251,28 @@ function makePalette() {
                 if (moveColor.css("visibility") === "visible") {
                     unsaved_changes = true;
                     $("#unsaved").text("*");
-                    this.paint = $("#pick-fill").css("fill");
+                    var currentPaint = this.paint;
+                    var newPaint = $("#pick-fill").css("fill");
+                    this.paint = newPaint;
+                    var currentSeg = this;
+                    var cid = this.id;
+                    console.log("current seg: " + currentSeg.id);
                     $("body").css("cursor", "pointer");
                     moveColor.css("visibility", "hidden");
                     $("#eyedropper").css("visibility", "hidden");
                     colors.splice(this.id, 1, "#" + tinycolor(this.paint).toHex());
+                    UM.add({
+                        undo: function () {
+                            console.log("undo");
+                            console.log(newP.id + " --> " + currentPaint);
+                            fillSeg(newP, currentPaint);
+                        },
+                        redo: function () {
+                            console.log("redo");
+                            console.log(newP.id + " --> " + newPaint);
+                            fillSeg(newP, newPaint);
+                        }
+                    })
                 } else {
                     var newColor = "#" + tinycolor(this.attrs.fill).toHex();
                     segments.forEach(function (s) {
@@ -279,6 +303,15 @@ function makePalette() {
         newP.select = false;
         segments.push(newP);
     }
+}
+
+function fillSeg(seg, color) {
+    console.log("fill");
+    seg.paint = color;
+    colors.splice(seg.id, 1, "#" + tinycolor(color).toHex());
+    deletePalette();
+    makePalette();
+    makeHoverSegs();
 }
 
 //Delete circular palette
@@ -805,6 +838,7 @@ $(function () {
         console.log("signed out mode");
     }
     togglecolorMode(colorMode);
+    UM = new UndoManager();
     // load();
 });
 
@@ -841,7 +875,12 @@ function savePalette(name) {
     $("#pname").text(pname);
 }
 
+function undo() {
+    UM.undo();
+}
+
 function load() {
+    console.log("load palettes");
     var loadpalettes = "";
     var uid = firebase.auth().currentUser.uid;
     pmDB.ref('users/' + uid).child("palettes")
@@ -868,6 +907,7 @@ function load() {
             // console.log("LOAD PALETTES: " + loadpalettes);
             $("#loadcontainer").html(loadpalettes);
         });
+    console.log("load palettes 2")
 }
 
 function loadPalette(key, data) {
@@ -926,7 +966,6 @@ function savePrompt(saveas) {
 }
 
 //TODO: fix callback on promise
-
 function lookForSameName(name) {
     var pmDB = firebase.database();
     var user = firebase.auth().currentUser;
@@ -942,4 +981,17 @@ function lookForSameName(name) {
             }
         })
     });
+}
+
+function copytxt(id) {
+    console.log("copy text: " + id);
+    var txtarea = $(id);
+    txtarea.select();
+    try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
 }

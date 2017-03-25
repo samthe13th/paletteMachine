@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <title>Palette Machine</title>
     <div id="loadOverlay" style="background-color:#ffffff ;background-image: url('http://phylo.cs.mcgill.ca/assets/img/loading.gif'); background-repeat: no-repeat; background-position: center; position:absolute; top:0px; left:0px; width:100%; height:100%; z-index:2000;"></div>
-
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
-    <link href="vendor/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
     <link href="css/custom.css" type="text/css" rel="stylesheet">
     <link rel="stylesheet" href="css/vex.css" />
     <link rel="stylesheet" href="css/vex-theme-wireframe.css" />
@@ -28,7 +27,23 @@
         </div>
         <div id="colormachine">
             <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh1" src="graphics/refresh.png" onclick="refreshPalette()"></img>
-            <input id="colorinput" type="text"></input>
+            <textarea id="colorinput"></textarea>
+            <button id="copybtn" onclick="copytxt('#colorinput')" class="smallbtn">Copy</button>
+            <script>
+                                          function copytxt(id) {
+                                              console.log("copy text: " + id);
+                                              var txtarea = $(id);
+                                              txtarea.select();
+                                              try {
+                                                  var successful = document.execCommand('copy');
+                                                  var msg = successful ? 'successful' : 'unsuccessful';
+                                                  console.log('Copying text command was ' + msg);
+                                              } catch (err) {
+                                                  console.log('Oops, unable to copy');
+                                              }
+                                          }
+            </script>
+
             <div id="left">
                 <div class="sub-window" id="table-window">
                     <div class="table-div">
@@ -71,13 +86,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
 <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
-<script src="js/vex.combined.min.js"></script>
+<script src="js/vender/vex.combined.min.js"></script>
 <script>
                                                           vex.defaultOptions.className = 'vex-theme-wireframe'
 
 </script>
-<script src="js/raphael.min.js"></script>
-<script src="js/tinycolor.js"></script>
+<script src="js/vender/raphael.min.js"></script>
+<script src="js/vender/tinycolor.js"></script>
 <script src="js/svgslider.js"></script>
 <script src="js/pm.js"></script>
 <script type="text/javascript" src="js/firebase-config.js"></script>
+<script src="js/vender/undomanager.js"></script>
