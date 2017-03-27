@@ -1,9 +1,121 @@
+<!DOCTYPE html>
 <html>
 
-<head></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Palette Machine</title>
+    <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.0/firebaseui.css" />
+    <div id="loadOverlay" style="background-color:#ffffff ;background-image: url('http://phylo.cs.mcgill.ca/assets/img/loading.gif'); background-repeat: no-repeat; background-position: center; position:absolute; top:0px; left:0px; width:100%; height:100%; z-index:2000;"></div>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="css/custom.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="css/vex.css" />
+    <link rel="stylesheet" href="css/vex-theme-wireframe.css" />
+</head>
+
+<div id="header"><span id="sitetitle">Palette Machine<em style="font-size: 10px"> (demo) </em></span> | <span id="useremail"></span> --
+    <span id="pname"><em>untitled</em></span><span id="unsaved"></span></div>
 
 <body>
-    <h1>Under Construction...</h1>
+    <div id="fullpage">
+        <div id="menu">menufkajdskfjakdjf kjdsafkjakdsjf lkdsajf kdsafj dsf<br>fjkjda kfjdsaf<br>fkjdafkjdaf fjadksfjkdasjfkldsaf
+            <br>fkjkdaf jdsafj</div>
+
+        <!--<hr>
+        <div id="loadcontainer"></div>-->
+        <div class="container-center" id="sidebar">
+            <button class="custom-btn" onclick="savePrompt(false)">Save</button>
+            <button class="custom-btn" onclick="savePrompt(true)">Save As</button>
+            <button class="custom-btn" onclick="newPalette()">New</button>
+            <h3 class="sidebar-text">My Palettes</h3>
+
+        </div>
+        <div class="container-center" id="firebaseui-auth-container">
+        </div>
+        <div id="colormachine">
+            <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh1" src="graphics/refresh.png" onclick="refreshPalette()"></img>
+            <textarea id="colorinput"></textarea>
+            <button id="copybtn" onclick="copytxt('#colorinput')" class="smallbtn">Copy</button>
+            <script>
+                                          function copytxt(id) {
+                                              console.log("copy text: " + id);
+                                              var txtarea = $(id);
+                                              txtarea.select();
+                                              try {
+                                                  var successful = document.execCommand('copy');
+                                                  var msg = successful ? 'successful' : 'unsuccessful';
+                                                  console.log('Copying text command was ' + msg);
+                                              } catch (err) {
+                                                  console.log('Oops, unable to copy');
+                                              }
+                                          }
+                                          function redirect() {
+                                              window.location.replace("https://www.palettemachine.com");
+                                          }
+            </script>
+
+            <div id="left">
+                <div class="sub-window" id="table-window">
+                    <div class="table-div">
+                        <table id="color-table">
+                            <tr>
+                                <th>Swatch</th>
+                                <th>Hex</th>
+                                <th><button id="RGBbtn" class="small-btn" onclick="changeToRgb()">RGB</button><button id="HSLbtn"
+                                        class="small-btn" onclick="changeToHsl()">HSL</button></th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="sub-window" id="css-window">
+                    <p>//Cut and paste into CSS file:</p>
+                    <div id="colors-CSS"></div>
+                </div>
+            </div>
+            <img class="bg-image"></img>
+            <div id="right">
+                <h2 class='customTitle'>Upload Image</h2>
+                <div id="addPicPanel1">
+                    <div id="pickcolorpreview"></div>
+                    <input id="inp" type='file' onchange="readURL(this)" />
+                    <img id="img">
+                </div>
+                <p id="b64"></p>
+                <img id="myImage" />
+                <canvas class="colorpick" id="myCanvas" width="300" height="300"></canvas>
+            </div>
+            <svg id="move-color">
+                <!--<path id="pick-fill" fill="black" d="m0 20 l5 -7 l15 -15 l8 0 l-20 20 Z">-->
+                <circle id="pick-fill" cx="10" cy="10" r="9" stroke="white" stroke-width="2" fill="blue">
+            </svg>
+            <img id="eyedropper" src="graphics/picker.png">
+        </div>
 </body>
 
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="js/vender/raphael.min.js"></script>
+<script src="js/vender/tinycolor.js"></script>
+<script src="js/vender/vex.combined.min.js"></script>
+<script>
+                                                          vex.defaultOptions.className = 'vex-theme-wireframe'
+
+</script>
+<script src="js/svgslider.js"></script>
+<script src="js/pm.js"></script>
+<script type="text/javascript" src="js/firebase-init.js"></script>
+<script type="text/javascript" src="js/firebase-config.js"></script>
+
+<style>
+    #menu {
+        position: fixed;
+        top: 50px;
+        height: 100vh;
+        background-color: #ba5671;
+        border-width: 1px;
+        margin: auto;
+        width: 280px;
+        display: inline-block;
+    }
+</style>

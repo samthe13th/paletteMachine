@@ -52,22 +52,6 @@ function mouseOut() {
     })
 }
 
-// //Read uploaded image file
-// function readFile() {
-//     console.log("read")
-//     if (this.files && this.files[0]) {
-//         var FR = new FileReader();
-//         FR.addEventListener("load", function (e) {
-//             // document.getElementById("myImage").src = e.target.result;
-//             // document.getElementById("b64").innerHTML = e.target.result;
-//             mypic.src = e.target.result;
-//             setUpCanvas();
-//             getPxlData(50, 50);
-//         });
-//         console.log("FR.readAsDataURL: " + FR.readAsDataURL(this.files[0]));
-//         FR.readAsDataURL(this.files[0]);
-//     }
-// }
 function refreshPalette() {
     vex.dialog.confirm({
         message: "Are you sure you want to clear the palette?",
@@ -261,18 +245,18 @@ function makePalette() {
                     moveColor.css("visibility", "hidden");
                     $("#eyedropper").css("visibility", "hidden");
                     colors.splice(this.id, 1, "#" + tinycolor(this.paint).toHex());
-                    UM.add({
-                        undo: function () {
-                            console.log("undo");
-                            console.log(newP.id + " --> " + currentPaint);
-                            fillSeg(newP, currentPaint);
-                        },
-                        redo: function () {
-                            console.log("redo");
-                            console.log(newP.id + " --> " + newPaint);
-                            fillSeg(newP, newPaint);
-                        }
-                    })
+                    // UM.add({
+                    //     undo: function () {
+                    //         console.log("undo");
+                    //         console.log(newP.id + " --> " + currentPaint);
+                    //         fillSeg(newP, currentPaint);
+                    //     },
+                    //     redo: function () {
+                    //         console.log("redo");
+                    //         console.log(newP.id + " --> " + newPaint);
+                    //         fillSeg(newP, newPaint);
+                    //     }
+                    // })
                 } else {
                     var newColor = "#" + tinycolor(this.attrs.fill).toHex();
                     segments.forEach(function (s) {
@@ -838,10 +822,29 @@ $(function () {
         console.log("signed out mode");
     }
     togglecolorMode(colorMode);
-    UM = new UndoManager();
+    //UM = new UndoManager();
+     checkAuthStatus();
     // load();
 });
 
+function checkAuthStatus() {
+    var pmDB = firebase.database();
+    var user = firebase.auth().currentUser;
+    console.log("Auth check --> user: " + user);
+    if (user === null){
+        console.log("not authenticated")
+        //redirect();
+    }
+}
+function logout() {
+    firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+        console.log("sign out")
+    }, function (error) {
+        // An error happened.
+        console.log("log out error")
+    });
+}
 function makeColorCSS() {
     $("#css-window").css("visibility", "visible");
     var csspage = ""
@@ -875,9 +878,9 @@ function savePalette(name) {
     $("#pname").text(pname);
 }
 
-function undo() {
-    UM.undo();
-}
+// function undo() {
+//     UM.undo();
+// }
 
 function load() {
     console.log("load palettes");
@@ -965,7 +968,6 @@ function savePrompt(saveas) {
     }
 }
 
-//TODO: fix callback on promise
 function lookForSameName(name) {
     var pmDB = firebase.database();
     var user = firebase.auth().currentUser;
