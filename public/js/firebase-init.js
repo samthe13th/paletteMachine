@@ -35,8 +35,6 @@ var uiConfig = {
     signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
         {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
             // Whether the display name should be displayed in the Sign Up page.

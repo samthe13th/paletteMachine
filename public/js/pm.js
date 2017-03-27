@@ -823,7 +823,7 @@ $(function () {
     }
     togglecolorMode(colorMode);
     //UM = new UndoManager();
-     checkAuthStatus();
+    checkAuthStatus();
     // load();
 });
 
@@ -831,7 +831,7 @@ function checkAuthStatus() {
     var pmDB = firebase.database();
     var user = firebase.auth().currentUser;
     console.log("Auth check --> user: " + user);
-    if (user === null){
+    if (user === null) {
         console.log("not authenticated")
         //redirect();
     }
@@ -898,9 +898,12 @@ function load() {
                 if (childData.swatches.length > 6) {
                     h = 120;
                 }
-                loadpalettes += "<div onmouseover='mouseOver()' onmouseout='mouseOut()' class='miniPalette' id='" + childKey + "' style='height: " + h + "px' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')><div style='color: white'>" + childKey + "</div>"
+                loadpalettes += "<div onmouseover='mouseOver()' onmouseout='mouseOut()' class='miniPalette' id='" + childKey + "' style='height: " + h + "px' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>"
+                    + "<div style='color: white'>" + childKey + "</div>"
+                    + "<button class='db_load smallbtn' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>load</button>"
+                    + "<button class='db_delete smallbtn' onclick=dbDelete('" + childKey + "')>X</button>"
                 for (var i = 0; i < childData.swatches.length; i++) {
-                    loadpalettes += "<div class='miniSwatch' style='background-color: " + childData.swatches[i] + "'></div>"
+                    loadpalettes += "<div class='miniSwatch' style='border-style: solid; border-width: 1px; border-color: white; background-color: " + childData.swatches[i] + "'></div>"
                     if (i === 5) {
                         loadpalettes += "<br><br>";
                     }
@@ -911,7 +914,29 @@ function load() {
             $("#loadcontainer").html(loadpalettes);
         });
     console.log("load palettes 2")
+    showPalette();
+};
+
+function deletePrompt(key) {
+
 }
+
+function dbDelete(key) {
+    vex.dialog.confirm({
+        message: 'This will delete \"' + key + '\" from the database! Are you sure you want to do this?',
+        callback: function (value) {
+            if (value) {
+                var desertRef = firebase.database().ref("users/" + firebase.auth().currentUser.uid + "/palettes/" + key);
+                desertRef.remove().then(function () {
+                    console.log("file deleted");
+                }).catch(function (error) {
+                    console.log("error --> specified file not deleted")
+                });
+                load();
+            }
+        }
+    })
+};
 
 function loadPalette(key, data) {
     if (unsaved_changes) {
