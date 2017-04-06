@@ -13,19 +13,25 @@
     text-align: center;
     padding-top: 17px;
 }
+hr {
+    color: black;
+}
+.custom-hr {
+    color: black;
+}
 .sidebar-btn {
     padding: 5px 16px 5px 16px;
     font-size: 18px;
     background-color: rgba(1,1,1,0);
-    color: white;
+    color: black;
     border-style: solid;
-    border-color: white;
+    border-color: black;
     border-width: 1px;
 }
 .sidebar-text {
     text-align: center;
     font-size: 26px;
-    color: white;
+    color: black;
 }
 .menuSegBtns {
     margin-top: 1px;
@@ -165,7 +171,7 @@ input {
         position: fixed;
         top: 50px;
         height: "100%";
-        background-color: #ba5671;
+        background-color: #e8eef7;
         border-width: 1px;
         margin: auto;
         width: 280px;
