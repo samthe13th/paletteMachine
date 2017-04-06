@@ -873,7 +873,7 @@ function savePalette(name) {
     var loadpalettes = "";
     var uid = firebase.auth().currentUser.uid;
     console.log("SAVE ");
-    pmDB.ref('users/' + uid).child('palettes/' + name).set({
+    pmDB.ref('users/' + uid).child('palettes/' + parseNameOut(name)).set({
         swatches: colors
     });
     load();
@@ -920,7 +920,7 @@ function load() {
 };
 function MenuSegHeader(childKey, childData) {
     var htmlStr = "<div class='menuSegHeader'>"
-        + "<div class='menuSegTitle' style='color: white'>" + childKey + "</div>"
+        + "<div class='menuSegTitle' style='color: white'>" + parseNameIn(childKey) + "</div>"
         + "<div class='menuSegBtns'>"
         + "<button class='db_load smallbtn-black' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>load</button>"
         + "<button class='db_delete smallbtn-black' onclick=dbDelete('" + childKey + "')>X</button>"
@@ -930,7 +930,7 @@ function MenuSegHeader(childKey, childData) {
 
 function dbDelete(key) {
     vex.dialog.confirm({
-        message: 'This will delete \"' + key + '\" from the database! Are you sure you want to do this?',
+        message: 'This will delete \"' + parseNameIn(key) + '\" from the database! Are you sure you want to do this?',
         callback: function (value) {
             if (value) {
                 var desertRef = firebase.database().ref("users/" + firebase.auth().currentUser.uid + "/palettes/" + key);
@@ -948,7 +948,7 @@ function dbDelete(key) {
 function loadPalette(key, data) {
     if (unsaved_changes) {
         vex.dialog.confirm({
-            message: 'Are you sure you want to load \"' + key + '\"? You will lose current unsaved changes on \"' + $("#pname").text() + '\".',
+            message: 'Are you sure you want to load \"' + parseNameIn(key) + '\"? You will lose current unsaved changes on \"' + $("#pname").text() + '\".',
             callback: function (value) {
                 if (value) {
                     loadPaletteCallback(key, data);
@@ -965,7 +965,7 @@ function loadPaletteCallback(key, data) {
     deletePalette();
     makePalette();
     makeHoverSegs();
-    pname = key;
+    pname = parseNameIn(key);
     unsaved_changes = false;
     $("#unsaved").text("");
     $("#pname").text(pname);
@@ -1028,4 +1028,32 @@ function copytxt(id) {
     } catch (err) {
         console.log('Oops, unable to copy');
     }
+}
+
+var testName = "test name";
+console.log(name.indexOf("&&_"))
+
+function parseNameOut(name){
+var parsedName = "";
+for (var i = 0, ii = name.length; i < ii; i++ ){
+	console.log(name.charAt(i));
+  if (name.charAt(i) === " "){
+  parsedName += "&&_"
+  } else {
+  parsedName += name.charAt(i);
+  }
+  }
+ return parsedName; 
+}
+
+function parseNameIn(name){
+var strarray = name.split("&&_");
+var parsedName = "";
+for (var i = 0, ii = strarray.length; i < ii; i++){
+  parsedName += strarray[i]
+  if (i < (ii - 1)){
+  parsedName += " ";
+  }
+}
+return parsedName;
 }
