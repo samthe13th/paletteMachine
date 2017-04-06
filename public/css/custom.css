@@ -10,13 +10,37 @@
     width: 400px;
 }
 
+.menuSegBtns {
+    margin-top: 1px;
+    width: 64px;
+    display: block;
+    float: right;
+}
+
+.menuSegHeader {
+    height: 30px;
+}
+
+.menuSegTitle {
+    padding: 5px;
+    display: block;
+    float: left;
+}
+
 .smallbtn {
     background-color: #f2f2f2;
     border-style: solid;
     border-width: 1px;
     border-color: white;
-    border-color: "white"; 
     color: darkgrey;
+}
+
+.smallbtn-black {
+    background-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    color: white;
 }
 
 #refresh1 {
@@ -130,15 +154,19 @@ input {
     }
 
     .miniPalette {
-        padding: 15px;
         background-color: black;
         border-style: solid;
-        margin: 5px;
+        margin: 8px;
+    }
+
+    .miniPaletteSwatches {
+        padding-left: 7px;
+        padding-top: 8px;
     }
 
     .miniSwatch {
-        width: 30px;
-        height: 30px;
+        width: 38px;
+        height: 38px;
         border-style: solid;
         border-color: black;
         position: block;
@@ -163,6 +191,7 @@ input {
         color: white;
         top: 0px;
         padding: 10px;
+        margin-bottom: 5px;
     }
     #subheader {
         position: fixed;

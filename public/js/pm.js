@@ -52,18 +52,22 @@ function mouseOut() {
     })
 }
 
-function refreshPalette() {
+function clearPalette() {
     vex.dialog.confirm({
         message: "Are you sure you want to clear the palette?",
         callback: function (v) {
             if (v) {
-                colors = [blank, blank, blank, blank, blank, blank];
-                deletePalette();
-                makePalette();
-                makeHoverSegs();
+                refreshPalette();
             }
         }
     })
+}
+
+function refreshPalette() {
+    colors = [blank, blank, blank, blank, blank, blank];
+    deletePalette();
+    makePalette();
+    makeHoverSegs();
 }
 
 function readURL(el) {
@@ -883,7 +887,6 @@ function savePalette(name) {
 // }
 
 function load() {
-    console.log("load palettes");
     var loadpalettes = "";
     var uid = firebase.auth().currentUser.uid;
     pmDB.ref('users/' + uid).child("palettes")
@@ -893,32 +896,36 @@ function load() {
             snapshot.forEach(function (childSnapshot) {
                 childKey = childSnapshot.key;
                 childData = childSnapshot.val();
-                // console.log(childKey + ": " + JSON.stringify(childData));
-                var h = 80;
+                var h = 90;
                 if (childData.swatches.length > 6) {
-                    h = 120;
+                    h = 130;
                 }
-                loadpalettes += "<div onmouseover='mouseOver()' onmouseout='mouseOut()' class='miniPalette' id='" + childKey + "' style='height: " + h + "px' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>"
-                    + "<div style='color: white'>" + childKey + "</div>"
-                    + "<button class='db_load smallbtn' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>load</button>"
-                    + "<button class='db_delete smallbtn' onclick=dbDelete('" + childKey + "')>X</button>"
-                for (var i = 0; i < childData.swatches.length; i++) {
+                loadpalettes += "<div class='miniPalette' id='" + childKey + "' style='height: " + h + "px')>"
+                    + MenuSegHeader(childKey, childData)
+                    + "<div class='miniPaletteSwatches'>"
+                for (var i = 0, ii = childData.swatches.length; i < ii; i++) {
                     loadpalettes += "<div class='miniSwatch' style='border-style: solid; border-width: 1px; border-color: white; background-color: " + childData.swatches[i] + "'></div>"
-                    if (i === 5) {
-                        loadpalettes += "<br><br>";
-                    }
+                    // if (i === 5) {
+                    //     loadpalettes += "<div>";
+                    // }
+                    // if (ii >= 5 && i === (ii - 1)){
+                    //     loadpalettes += "</div>";
+                    // }
                 }
-                loadpalettes += "</div>";
+                loadpalettes += "</div></div>";
             });
-            // console.log("LOAD PALETTES: " + loadpalettes);
             $("#loadcontainer").html(loadpalettes);
         });
-    console.log("load palettes 2")
     showPalette();
 };
-
-function deletePrompt(key) {
-
+function MenuSegHeader(childKey, childData) {
+    var htmlStr = "<div class='menuSegHeader'>"
+        + "<div class='menuSegTitle' style='color: white'>" + childKey + "</div>"
+        + "<div class='menuSegBtns'>"
+        + "<button class='db_load smallbtn-black' onclick=loadPalette('" + childKey + "','" + JSON.stringify(childData.swatches) + "')>load</button>"
+        + "<button class='db_delete smallbtn-black' onclick=dbDelete('" + childKey + "')>X</button>"
+        + "</div></div>"
+    return htmlStr
 }
 
 function dbDelete(key) {
