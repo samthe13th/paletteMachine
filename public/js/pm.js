@@ -208,6 +208,7 @@ function newPalette() {
         callback: function (confirm) {
             if (confirm) {
                 refreshPalette();
+                clearBlender();
                 pname = null;
                 $("#pname").html("<em>untitled</em>");
             }
