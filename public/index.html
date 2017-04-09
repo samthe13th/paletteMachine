@@ -37,26 +37,9 @@
         </div>
         <div id="colormachine">
             <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh1" src="graphics/refresh.png" onclick="clearPalette()"></img>
+            <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh-mini" src="graphics/refresh.png" onclick="clearBlender()"></img>
             <textarea id="colorinput"></textarea>
             <button id="copybtn" onclick="copytxt('#colorinput')" class="smallbtn">Copy</button>
-            <script>
-                                          function copytxt(id) {
-                                              console.log("copy text: " + id);
-                                              var txtarea = $(id);
-                                              txtarea.select();
-                                              try {
-                                                  var successful = document.execCommand('copy');
-                                                  var msg = successful ? 'successful' : 'unsuccessful';
-                                                  console.log('Copying text command was ' + msg);
-                                              } catch (err) {
-                                                  console.log('Oops, unable to copy');
-                                              }
-                                          }
-                                          function redirect() {
-                                              window.location.replace("https://www.palettemachine.com");
-                                          }
-            </script>
-
             <div id="left">
                 <div class="sub-window" id="table-window">
                     <div class="table-div">
@@ -108,6 +91,8 @@
 <script src="js/pm.js"></script>
 <script type="text/javascript" src="js/firebase-init.js"></script>
 <script type="text/javascript" src="js/firebase-config.js"></script>
+<script type-"text/javascript" src="js/copy.js"></script>
+
 
 <style>
     #menu {

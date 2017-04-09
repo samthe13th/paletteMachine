@@ -63,6 +63,15 @@ function clearPalette() {
     })
 }
 
+function clearBlender(){
+    blendL.attr({ fill: "white" });
+    blendL.paint = "white";
+    blendM.attr({ fill: "white" });
+    blendM.paint = "white";
+    blendR.attr({ fill: "white" });
+    blendR.paint = "white";
+}
+
 function refreshPalette() {
     colors = [blank, blank, blank, blank, blank, blank];
     deletePalette();
@@ -564,7 +573,7 @@ function updateSwatches(c) {
 
 //Draw blending tool
 function drawBlender() {
-    var blenderTxt = paper.text(485, 250, "Blender").attr({ "font-size": 18, "fill": "#dbe2ed" });
+    var blenderTxt = paper.text(485, 250, "Blender").attr({ "font-size": 18, "fill": "#cbd4e1" });
     blendL = blendContainer(0, 1, 1, 0, true);
     blendR = blendContainer(1, 0, 0, 1, true);
     blendM = blendContainer(0, 1, 0, 1, false);

@@ -78,6 +78,17 @@ hr {
     opacity: 0.2;
 }
 
+#refresh-mini {
+    position: absolute;
+    display: block;
+    width: 35px;
+    height: 35px;
+    top: 300px;
+    left: 860px;
+    z-index: 100;
+    opacity: 0.2;
+}
+
 #colorinput {
     z-index: 1000;
     width: 110px;
