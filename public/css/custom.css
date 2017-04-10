@@ -330,12 +330,13 @@ input {
     #right {
         text-align: center;
         border-style: solid;
-        border-color: #ba5671;
-        display: inline-block;
+        border-color: #e8eef7;
+        display: block;
         width: 400px;
         height: 522px;
         margin-top: 34px;
         float: left;
+        background-color: rgba(0,0,0,0.5);
     }
     
     #image-form {

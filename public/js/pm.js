@@ -989,7 +989,7 @@ function savePrompt(saveas) {
             message: 'Save Palette',
             placeholder: 'name',
             callback: function (value) {
-                lookForSameName(value).then(function (v) {
+                lookForSameName(parseNameOut(value)).then(function (v) {
                     if (v !== null) {
                         vex.dialog.confirm({
                             message: "There is already a palette with this name in your collection. Do you want to overwrite it?",
@@ -1020,7 +1020,7 @@ function lookForSameName(name) {
                 console.log("palette " + snapshot.val() + " exists")
                 resolve(snapshot.val());
             } else {
-                console.log("No match found");
+                console.log("No match found for " + name);
                 resolve(null);
             }
         })
