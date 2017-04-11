@@ -37,6 +37,7 @@ var colorInput = $("#colorinput");
 var pickfill;
 var refreshbtn = $("#refresh1");
 var UM;
+var paletteList = [];
 
 function mouseOver() {
     console.log("over");
@@ -63,7 +64,7 @@ function clearPalette() {
     })
 }
 
-function clearBlender(){
+function clearBlender() {
     blendL.attr({ fill: "white" });
     blendL.paint = "white";
     blendM.attr({ fill: "white" });
@@ -884,7 +885,8 @@ function savePalette(name) {
     var uid = firebase.auth().currentUser.uid;
     console.log("SAVE ");
     pmDB.ref('users/' + uid).child('palettes/' + parseNameOut(name)).set({
-        swatches: colors
+        swatches: colors,
+        timestamp: getTimeStamp()
     });
     load();
     unsaved_changes = false;
@@ -897,37 +899,57 @@ function savePalette(name) {
 // }
 
 function load() {
-    var loadpalettes = "";
+    var oList = [];
     var uid = firebase.auth().currentUser.uid;
     pmDB.ref('users/' + uid).child("palettes")
+        .orderByChild("timestamp")
         .once('value', function (snapshot) {
             var childKey;
             var childData;
             snapshot.forEach(function (childSnapshot) {
                 childKey = childSnapshot.key;
                 childData = childSnapshot.val();
-                var h = 90;
-                if (childData.swatches.length > 6) {
-                    h = 130;
-                }
-                loadpalettes += "<div class='miniPalette' id='" + childKey + "' style='height: " + h + "px')>"
-                    + MenuSegHeader(childKey, childData)
-                    + "<div class='miniPaletteSwatches'>"
-                for (var i = 0, ii = childData.swatches.length; i < ii; i++) {
-                    loadpalettes += "<div class='miniSwatch' style='border-style: solid; border-width: 1px; border-color: white; background-color: " + childData.swatches[i] + "'></div>"
-                    // if (i === 5) {
-                    //     loadpalettes += "<div>";
-                    // }
-                    // if (ii >= 5 && i === (ii - 1)){
-                    //     loadpalettes += "</div>";
-                    // }
-                }
-                loadpalettes += "</div></div>";
+                //var h = 90;
+                oList.push({ key: childKey, data: childData });
             });
-            $("#loadcontainer").html(loadpalettes);
-        });
-    showPalette();
+        }).then(function () {
+            console.log("load callback")
+            paletteList = oList.reverse();
+            console.log("paletteList: " + JSON.stringify(paletteList));
+            makePaletteSidepanel();
+            showPalette();
+        })
 };
+function makePaletteSidepanel() {
+    console.log("make side panel")
+    var loadpalettes = "";
+    for (var i = 0, ii = paletteList.length; i < ii; i++) {
+        var key, data;
+        var h = 90;
+        console.log("paletteList.length: " + ii);
+        console.log("paletteList[" + i + "] = " + paletteList[i].key);
+        key = paletteList[i].key;
+        data = paletteList[i].data;
+        console.log("data.swatches.length: " + data.swatches.length);
+        if (data.swatches.length > 6) {
+            h = 130;
+        }
+        loadpalettes += "<div class='miniPalette' id='" + key + "' style='height: " + h + "px')>"
+            + MenuSegHeader(key, data)
+            + "<div class='miniPaletteSwatches'>"
+            + getSwatches(data)
+            + "</div></div>";
+    }
+    console.log("palette list string: " + loadpalettes);
+    $("#loadcontainer").html(loadpalettes);
+}
+function getSwatches(d) {
+    var swatches = "";
+    for (var i = 0; i < d.swatches.length; i++) {
+        swatches += "<div class='miniSwatch' style='border-style: solid; border-width: 1px; border-color: white; background-color: " + d.swatches[i] + "'></div>"
+    }
+    return swatches
+}
 function MenuSegHeader(childKey, childData) {
     var htmlStr = "<div class='menuSegHeader'>"
         + "<div class='menuSegTitle' style='color: white'>" + parseNameIn(childKey) + "</div>"
@@ -1043,27 +1065,38 @@ function copytxt(id) {
 var testName = "test name";
 console.log(name.indexOf("&&_"))
 
-function parseNameOut(name){
-var parsedName = "";
-for (var i = 0, ii = name.length; i < ii; i++ ){
-	console.log(name.charAt(i));
-  if (name.charAt(i) === " "){
-  parsedName += "&&_"
-  } else {
-  parsedName += name.charAt(i);
-  }
-  }
- return parsedName; 
+function parseNameOut(name) {
+    var parsedName = "";
+    for (var i = 0, ii = name.length; i < ii; i++) {
+        console.log(name.charAt(i));
+        if (name.charAt(i) === " ") {
+            parsedName += "&&_"
+        } else {
+            parsedName += name.charAt(i);
+        }
+    }
+    return parsedName;
 }
 
-function parseNameIn(name){
-var strarray = name.split("&&_");
-var parsedName = "";
-for (var i = 0, ii = strarray.length; i < ii; i++){
-  parsedName += strarray[i]
-  if (i < (ii - 1)){
-  parsedName += " ";
-  }
+function parseNameIn(name) {
+    var strarray = name.split("&&_");
+    var parsedName = "";
+    for (var i = 0, ii = strarray.length; i < ii; i++) {
+        parsedName += strarray[i]
+        if (i < (ii - 1)) {
+            parsedName += " ";
+        }
+    }
+    return parsedName;
 }
-return parsedName;
+
+function getTimeStamp() {
+    var str = "";
+    var currentTime = new Date()
+    var year = currentTime.getFullYear();
+    var month = currentTime.getMonth();
+    var day = currentTime.getDay();
+    var time = currentTime.getTime();
+    str += year + "-" + month + "-" + day + "-" + time + "";
+    return str;
 }

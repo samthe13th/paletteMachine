@@ -25,7 +25,8 @@ hr {
     background-color: rgba(1,1,1,0);
     color: black;
     border-style: solid;
-    border-color: black;
+    border-color: white;
+    background-color: white;
     border-width: 1px;
 }
 .sidebar-text {
@@ -182,7 +183,7 @@ input {
         position: fixed;
         top: 50px;
         height: "100%";
-        background-color: #e8eef7;
+        background-color: #d0ddea;
         border-width: 1px;
         margin: auto;
         width: 280px;
