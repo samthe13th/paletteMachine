@@ -575,7 +575,7 @@ function updateSwatches(c) {
 
 //Draw blending tool
 function drawBlender() {
-    var blenderTxt = paper.text(485, 250, "Blender").attr({ "font-size": 18, "fill": "#cbd4e1" });
+    var blenderTxt = paper.text(485, 245, "Blender").attr({ "font-size": 22, "fill": "#cbd4e1" });
     blendL = blendContainer(0, 1, 1, 0, true);
     blendR = blendContainer(1, 0, 0, 1, true);
     blendM = blendContainer(0, 1, 0, 1, false);

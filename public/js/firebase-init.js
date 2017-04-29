@@ -15,7 +15,8 @@ var uiConfig = {
             console.log("user ----> " + firebase.auth().currentUser)
             userSetup();
             userMenu();
-            // document.getElementById('loader').style.display = 'none';
+            $('#sidebar-txt').html("My Palettes");
+            $('#sidebar-txt').css("font-size",  "30px");
             return false;
         },
         uiShown: function () {
@@ -48,7 +49,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 ui.start('#firebaseui-auth-container', uiConfig);
 var pmDB = firebase.database();
 function userMenu() {
-  //  alert("menu")
+    //  alert("menu")
 };
 var pmDB, user, email, uid;
 function userSetup() {
@@ -72,6 +73,7 @@ function userSetup() {
             });
         }
     });
+   // $("#menu").remove();
     $("#sidebar").append("<hr><div id='loadcontainer'></div>");
 }
 
