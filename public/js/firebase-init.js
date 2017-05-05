@@ -17,6 +17,7 @@ var uiConfig = {
             userMenu();
             $('#sidebar-txt').html("My Palettes");
             $('#sidebar-txt').css("font-size",  "30px");
+            $("#logout").css("visibility","visible");
             return false;
         },
         uiShown: function () {

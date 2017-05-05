@@ -854,7 +854,8 @@ function checkAuthStatus() {
 function logout() {
     firebase.auth().signOut().then(function () {
         // Sign-out successful.
-        console.log("sign out")
+        console.log("sign out");
+        location.reload();
     }, function (error) {
         // An error happened.
         console.log("log out error")
