@@ -440,8 +440,10 @@ function makeSwatch(color, x, y) {
                 update();
                 window.dropOn = null;
             }
+            window.over = swatch;
         })
         .mouseout(function () {
+            window.over = null;
             if ($("#move-color").css("visibility") === "hidden") {
                 $("body").css("cursor", "default");
             }
@@ -676,6 +678,13 @@ $("body").mouseup(function (e) {
         })
     }
 })
+    .mousedown(function () {
+        console.log("over: " + window.over);
+        if (!window.over) {
+            console.log("throw away");
+            moveColor.css("visibility", "hidden");
+        }
+    })
     .mousemove(function (e) {
         if (true) {
             var mousePos = getMousePos(canvas, e);
