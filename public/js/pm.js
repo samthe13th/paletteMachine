@@ -420,13 +420,10 @@ function makeSwatch(color, x, y) {
     var swatch = paper.circle(x - 25, y, 18)
         .attr({ "fill": color, "stroke": "white" })
         .mousedown(function () {
-            $("body").css("cursor", "default");
             pickColor(this.attrs.fill);
-            //  $("#eyedropper").css("visibility", "hidden");
         })
         .mouseover(function () {
             if (moveColor.css("visibility") === "hidden") {
-                // $("#eyedropper").css("visibility", "visible");
                 $("body").css("cursor", "pointer");
             } else {
                 $("body").css("cursor", "default");
