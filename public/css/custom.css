@@ -1,3 +1,15 @@
+#menu {
+        position: fixed;
+        top: 50px;
+        height: 100vh;
+        background-color: #e8eef7;
+        border-style: solid;
+        border-color: white;
+        border-width: 2px;
+        margin: auto;
+        width: 280px;
+        display: inline-block;
+}
 .custom-form {
     position: relative;
     margin-top: 8%;
@@ -89,7 +101,10 @@ hr {
     top: 95px;
     left: 625px;
     z-index: 100;
-    opacity: 0.2;
+    opacity: 0.1;
+}
+#refresh1:hover{
+    opacity: 0.8;
 }
 
 #refresh-mini {
@@ -100,7 +115,10 @@ hr {
     top: 275px;
     left: 860px;
     z-index: 100;
-    opacity: 0.2;
+    opacity: 0.1;
+}
+#refresh-mini:hover {
+    opacity: 0.8;
 }
 
 #colorinput {
@@ -152,8 +170,9 @@ hr {
 }
 
 body {
-    background-image: url("http://slodive.com/wp-content/uploads/2011/05/polka-dot-backgrounds/black-polka.jpg");
-    background-repeat: repeat;
+    /*background-image: url("http://slodive.com/wp-content/uploads/2011/05/polka-dot-backgrounds/black-polka.jpg");
+    background-repeat: repeat;*/
+    background-color: #e8eef7;
     height: 650px;
     border-width: 5px;
 }
@@ -332,7 +351,7 @@ input {
     
     .customTitle {
         margin-top: 35px;
-        color: white;
+        color: black;
     }
     
     #left {
@@ -348,13 +367,14 @@ input {
         position: absolute;
         text-align: center;
         border-style: solid;
+        border-width: 2px;
         border-color: #e8eef7;
         display: block;
         width: 400px;
         height: 522px;
         top: 94px;
         left: 920px;
-        background-color: rgba(0,0,0,0.5);
+        background-color: white;
     }
     
     #image-form {
@@ -373,17 +393,16 @@ input {
     }
     
     #pickcolorpreview {
-        width: 40px;
-        height: 40px;
+        width: 26px;
+        height: 26px;
         color: black;
         border-style: solid;
         border-width: 2px;
-        border-color: white;
+        border-color: #e8eef7;
         border-radius: 0px;
         background-color: white;
         display: inline-block;
-        position: relative;
-        margin-bottom: 10px;
+        margin-top: 8px;
     }
     
     #myImage {
@@ -401,15 +420,12 @@ input {
     }
     
     #upload-bar {
-        display: block;
         text-align: center;
     }
 
     #inp {
-        margin: auto;
-        background-color: white;
-        position: relative;
-        display: block;
+        background-color: #e8eef7;
+        width: 200px;
     }
     
     #idropdiv {
