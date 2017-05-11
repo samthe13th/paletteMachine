@@ -40,12 +40,14 @@ var UM;
 var paletteList = [];
 
 function mouseOver() {
+    console.log("over");
     $("body").css({
         cursor: "pointer"
     })
 }
 
 function mouseOut() {
+    console.log("out");
     $("body").css({
         cursor: "default"
     })
@@ -99,6 +101,7 @@ function imageLoaded() {
 
 //Resize and draw uploaded image onto canvas
 function setUpCanvas() {
+    console.log("set up canvas. Mypic: " + mypic.width);
     if (mypic.width > mypic.height) {
         f = 300 / mypic.width;
     } else {
@@ -109,6 +112,7 @@ function setUpCanvas() {
     picoff.x = (300 - pwidth) / 2;
     picoff.y = (300 - pheight) / 2;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log("mypic: " + mypic + "picoff.x: " + picoff.x, " pickoffy: " + picoff.y);
     ctx.drawImage(mypic, picoff.x, picoff.y, pwidth, pheight);
 }
 
@@ -251,6 +255,7 @@ function makePalette() {
                     this.paint = newPaint;
                     var currentSeg = this;
                     var cid = this.id;
+                    console.log("current seg: " + currentSeg.id);
                     $("body").css("cursor", "pointer");
                     moveColor.css("visibility", "hidden");
                     $("#eyedropper").css("visibility", "hidden");
@@ -300,6 +305,7 @@ function makePalette() {
 }
 
 function fillSeg(seg, color) {
+    console.log("fill");
     seg.paint = color;
     colors.splice(seg.id, 1, "#" + tinycolor(color).toHex());
     deletePalette();
@@ -421,6 +427,7 @@ function makeSwatch(color, x, y) {
         .attr({ "fill": color, "stroke": "white" })
         .mousedown(function () {
             pickColor(this.attrs.fill);
+            console.log("this.attrs.fill: " + this.attrs.fill);
         })
         .mouseover(function () {
             if (moveColor.css("visibility") === "hidden") {
@@ -674,7 +681,6 @@ $("body").mouseup(function (e) {
             var mousePos = getMousePos(canvas, e);
             mx = mousePos.x;
             my = mousePos.y;
-            console.log("mx: " + mx + " my: " + my);
             moveColor.css({
                 left: e.pageX + 5,
                 top: (e.pageY - 25)
@@ -685,12 +691,10 @@ $("body").mouseup(function (e) {
             })
             getPxlData(mx, my);
             if ((mx - picoff.x) < pwidth && (mx - picoff.x) > 0 && (my - picoff.y) > 0 && (my - picoff.y) < pheight) {
-                console.log("picker true")
                 eyedropper = true;
                 picker.css("visibility", "visible");
                 $("body").css("cursor", "none");
             } else {
-                console.log("picker false")
                 eyedropper = false;
                 picker.css("visibility", "hidden");
                 if (picker.css("cursor") === "null") {
@@ -828,8 +832,10 @@ $(function () {
     makeColorCSS();
     showPalette();
     if (user) {
+        console.log("sign in");
         alert("You are signed in! ID: " + user.uid);
     } else {
+        console.log("signed out mode");
     }
     togglecolorMode(colorMode);
     //UM = new UndoManager();
@@ -840,14 +846,20 @@ $(function () {
 function checkAuthStatus() {
     var pmDB = firebase.database();
     var user = firebase.auth().currentUser;
+    console.log("Auth check --> user: " + user);
     if (user === null) {
+        console.log("not authenticated")
         //redirect();
     }
 }
 function logout() {
     firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+        console.log("sign out");
         location.reload();
     }, function (error) {
+        // An error happened.
+        console.log("log out error")
     });
 }
 function makeColorCSS() {
@@ -873,6 +885,7 @@ function blendColors() {
 function savePalette(name) {
     var loadpalettes = "";
     var uid = firebase.auth().currentUser.uid;
+    console.log("SAVE ");
     pmDB.ref('users/' + uid).child('palettes/' + parseNameOut(name)).set({
         swatches: colors,
         timestamp: getTimeStamp()
@@ -902,18 +915,25 @@ function load() {
                 oList.push({ key: childKey, data: childData });
             });
         }).then(function () {
+            console.log("load callback")
             paletteList = oList.reverse();
+            console.log("paletteList: " + JSON.stringify(paletteList));
             makePaletteSidepanel();
             showPalette();
         })
 };
 function makePaletteSidepanel() {
     $("#sidebar-btns").css("display", "block");
+    console.log("make side panel")
     var loadpalettes = "";
     for (var i = 0, ii = paletteList.length; i < ii; i++) {
         var key, data;
         var h = 90;
+        console.log("paletteList.length: " + ii);
+        console.log("paletteList[" + i + "] = " + paletteList[i].key);
         key = paletteList[i].key;
+        data = paletteList[i].data;
+        console.log("data.swatches.length: " + data.swatches.length);
         if (data.swatches.length > 6) {
             h = 130;
         }
@@ -923,6 +943,7 @@ function makePaletteSidepanel() {
             + getSwatches(data)
             + "</div></div>";
     }
+    console.log("palette list string: " + loadpalettes);
     $("#loadcontainer").html(loadpalettes);
 }
 function getSwatches(d) {
@@ -949,7 +970,9 @@ function dbDelete(key) {
             if (value) {
                 var desertRef = firebase.database().ref("users/" + firebase.auth().currentUser.uid + "/palettes/" + key);
                 desertRef.remove().then(function () {
+                    console.log("file deleted");
                 }).catch(function (error) {
+                    console.log("error --> specified file not deleted")
                 });
                 load();
             }
@@ -1017,9 +1040,12 @@ function lookForSameName(name) {
     var user = firebase.auth().currentUser;
     return new Promise(function (resolve, reject) {
         pmDB.ref('users/' + user.uid).child('palettes/' + name).once('value', function (snapshot) {
+            console.log("snapshot: " + snapshot.val())
             if (snapshot.val() !== null) {
+                console.log("palette " + snapshot.val() + " exists")
                 resolve(snapshot.val());
             } else {
+                console.log("No match found for " + name);
                 resolve(null);
             }
         })
@@ -1027,18 +1053,25 @@ function lookForSameName(name) {
 }
 
 function copytxt(id) {
+    console.log("copy text: " + id);
     var txtarea = $(id);
     txtarea.select();
     try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
     } catch (err) {
+        console.log('Oops, unable to copy');
     }
 }
+
 var testName = "test name";
+console.log(name.indexOf("&&_"))
+
 function parseNameOut(name) {
     var parsedName = "";
     for (var i = 0, ii = name.length; i < ii; i++) {
+        console.log(name.charAt(i));
         if (name.charAt(i) === " ") {
             parsedName += "&&_"
         } else {
