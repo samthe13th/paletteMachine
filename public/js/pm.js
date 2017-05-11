@@ -438,7 +438,6 @@ function makeSwatch(color, x, y) {
             if ($("#move-color").css("visibility") === "hidden") {
                 $("body").css("cursor", "default");
             }
-            //   $("#eyedropper").css("visibility", "hidden");
             this.attr({ "stroke-width": 1 });
         });
     swatch.onDragOver(function (e) {
