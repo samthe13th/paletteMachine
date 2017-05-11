@@ -355,8 +355,7 @@ function makeColorPreview() {
             pickColor(this.attrs.fill);
         })
         .mouseover(function () {
-            console.log("over preview");
-            CursorJS.display = true;
+            $("body").css("cursor", "pointer");
             this.attr({ "stroke": "white", "stroke-width": 2 });
             if (window.currentThing && window.currentThing.id === this.id) {
                 update();
@@ -364,7 +363,7 @@ function makeColorPreview() {
             }
         })
         .mouseout(function () {
-            CursorJS.display = false;
+            $("body").css("cursor", "default");
             this.attr({ "stroke": "none" });
         });
     preview.x = 385;
@@ -427,15 +426,12 @@ function makeSwatch(color, x, y) {
     var swatch = paper.circle(x - 25, y, 18)
         .attr({ "fill": color, "stroke": "white" })
         .mousedown(function () {
-            $("body").css("cursor", "default");
             pickColor(this.attrs.fill);
-            $("#eyedropper").css("visibility", "hidden");
             console.log("this.attrs.fill: " + this.attrs.fill);
         })
         .mouseover(function () {
             if (moveColor.css("visibility") === "hidden") {
-                $("#eyedropper").css("visibility", "visible");
-                $("body").css("cursor", "none");
+                $("body").css("cursor", "pointer");
             } else {
                 $("body").css("cursor", "default");
             }
@@ -449,7 +445,6 @@ function makeSwatch(color, x, y) {
             if ($("#move-color").css("visibility") === "hidden") {
                 $("body").css("cursor", "default");
             }
-            $("#eyedropper").css("visibility", "hidden");
             this.attr({ "stroke-width": 1 });
         });
     swatch.onDragOver(function (e) {
@@ -697,8 +692,14 @@ $("body").mouseup(function (e) {
             getPxlData(mx, my);
             if ((mx - picoff.x) < pwidth && (mx - picoff.x) > 0 && (my - picoff.y) > 0 && (my - picoff.y) < pheight) {
                 eyedropper = true;
+                picker.css("visibility", "visible");
+                $("body").css("cursor", "none");
             } else {
                 eyedropper = false;
+                picker.css("visibility", "hidden");
+                if (picker.css("cursor") === "null") {
+                    $("body").css("cursor", "default");
+                }
             }
         }
     });
@@ -922,7 +923,7 @@ function load() {
         })
 };
 function makePaletteSidepanel() {
-    $("#sidebar-btns").css("display","block");
+    $("#sidebar-btns").css("display", "block");
     console.log("make side panel")
     var loadpalettes = "";
     for (var i = 0, ii = paletteList.length; i < ii; i++) {
