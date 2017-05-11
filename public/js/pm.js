@@ -235,11 +235,12 @@ function makePalette() {
                 }
             })
             .mouseout(function () {
-                if ($("#move-color").css("visibility") === "hidden") {
-                    $("body").css("cursor", "default");
-                } else if ($("body").css("cursor", "cell")) {
-                    $("body").css("cursor", "none");
-                }
+                 $("body").css("cursor", "default");
+                // if ($("#move-color").css("visibility") === "hidden") {
+                //     $("body").css("cursor", "default");
+                // } else if ($("body").css("cursor", "cell")) {
+                //   //  $("body").css("cursor", "none");
+                // }
                 this.attr({ "fill": this.paint });
                 window.dropOn = null;
                 if (segments[this.id].select !== true) {
@@ -352,6 +353,7 @@ function makeColorPreview() {
     preview = paper.rect(padding + 400, padding + 45, 60, 60, 12);
     preview.attr({ "fill": "white", "stroke": "none" })
         .mousedown(function () {
+            //moveColor.css("visibility", "visible");
             pickColor(this.attrs.fill);
         })
         .mouseover(function () {
@@ -430,11 +432,12 @@ function makeSwatch(color, x, y) {
             console.log("this.attrs.fill: " + this.attrs.fill);
         })
         .mouseover(function () {
-            if (moveColor.css("visibility") === "hidden") {
-                $("body").css("cursor", "pointer");
-            } else {
-                $("body").css("cursor", "default");
-            }
+             $("body").css("cursor", "pointer");
+            // if (moveColor.css("visibility") === "hidden") {
+            //     $("body").css("cursor", "pointer");
+            // } else {
+            //     $("body").css("cursor", "default");
+            // }
             this.attr({ "stroke-width": 4 });
             if (window.currentThing && window.currentThing.id === this.id) {
                 update();
@@ -444,9 +447,10 @@ function makeSwatch(color, x, y) {
         })
         .mouseout(function () {
             window.over = null;
-            if ($("#move-color").css("visibility") === "hidden") {
-                $("body").css("cursor", "default");
-            }
+            $("body").css("cursor", "default");
+            // if ($("#move-color").css("visibility") === "hidden") {
+            //     $("body").css("cursor", "default");
+            // }
             this.attr({ "stroke-width": 1 });
         });
     swatch.onDragOver(function (e) {
