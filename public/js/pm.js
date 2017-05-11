@@ -357,6 +357,7 @@ function makeColorPreview() {
             pickColor(this.attrs.fill);
         })
         .mouseover(function () {
+            window.over = preview;
             $("body").css("cursor", "pointer");
             this.attr({ "stroke": "white", "stroke-width": 2 });
             if (window.currentThing && window.currentThing.id === this.id) {
