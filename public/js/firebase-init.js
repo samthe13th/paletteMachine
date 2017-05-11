@@ -75,7 +75,7 @@ function userSetup() {
         }
     });
    // $("#menu").remove();
-    $("#sidebar").append("<hr><div id='loadcontainer'></div>");
+    $("#menu").append("<div id='loadcontainer'></div>");
 }
 
 

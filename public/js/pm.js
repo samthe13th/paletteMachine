@@ -922,6 +922,7 @@ function load() {
         })
 };
 function makePaletteSidepanel() {
+    $("#sidebar-btns").css("display","block");
     console.log("make side panel")
     var loadpalettes = "";
     for (var i = 0, ii = paletteList.length; i < ii; i++) {

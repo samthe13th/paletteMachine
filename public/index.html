@@ -21,19 +21,15 @@
     <div id="fullpage">
         <div id="menu">
             <div class="sidebar-text-sm" id="sidebar-txt">Log in to save palettes!</div>
+                <div id='sidebar-btns'>
+                    <button class="sidebar-btn" onclick="savePrompt(false)">Save</button>
+                    <button class="sidebar-btn" onclick="savePrompt(true)">Save As</button>
+                    <button class="sidebar-btn" onclick="newPalette()">New</button>
+                </div>
+            <div class="container-center" id="firebaseui-auth-container"></div>
         </div>
         <!--<hr>
         <div id="loadcontainer"></div>-->
-        <div class="container-center" id="sidebar">
-            <div class='sidebar-btns'>
-                <button class="sidebar-btn" onclick="savePrompt(false)">Save</button>
-                <button class="sidebar-btn" onclick="savePrompt(true)">Save As</button>
-                <button class="sidebar-btn" onclick="newPalette()">New</button>
-            </div>
-            <!--<h3 class="sidebar-text">My Palettes</h3>-->
-        </div>
-        <div class="container-center" id="firebaseui-auth-container">
-        </div>
         <div id="colormachine">
             <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh1" src="graphics/refresh.png" onclick="clearPalette()"></img>
             <img title="reset" onmouseover="mouseOver()" onmouseout="mouseOut()" id="refresh-mini" src="graphics/refresh.png" onclick="clearBlender()"></img>
@@ -60,11 +56,11 @@
             <img class="bg-image"></img>
             <div id="right">
                 <h2 class='customTitle'>Upload Image</h2>
-                <div id="addPicPanel1">
+                <div id="upload-bar">
                     <div id="pickcolorpreview"></div>
                     <input id="inp" type='file' onchange="readURL(this)" />
-                    <img id="img">
                 </div>
+                <img id="img">
                 <p id="b64"></p>
                 <img id="myImage" />
                 <canvas class="colorpick" id="myCanvas" width="300" height="300"></canvas>
