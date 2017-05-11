@@ -680,7 +680,7 @@ $("body").mouseup(function (e) {
 })
     .mousedown(function () {
         console.log("over: " + window.over);
-        if (!window.over) {
+        if (!window.over && !window.dropOn) {
             console.log("throw away");
             moveColor.css("visibility", "hidden");
         }
